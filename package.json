@@ -2,8 +2,11 @@
   "private": true,
   "sideEffects": false,
   "scripts": {
-    "build": "remix build",
-    "dev": "remix dev"
+    "dev": "run-p --print-label --race dev:*",
+    "dev:remix": "remix dev",
+    "dev:tailwind": "pnpm run tailwind --watch",
+    "build": "pnpm run tailwind --minify && remix build",
+    "tailwind": "tailwindcss -o app/tailwind.css"
   },
   "dependencies": {
     "@remix-run/node": "^1.6.1",
@@ -12,7 +15,7 @@
     "@vercel/node": "^1.15.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "remix-typed": "^0.2.0"
+    "remix-typed": "^0.3.0"
   },
   "devDependencies": {
     "@remix-run/dev": "^1.6.1",
@@ -21,6 +24,8 @@
     "@types/react": "^17.0.45",
     "@types/react-dom": "^17.0.17",
     "eslint": "^8.15.0",
+    "npm-run-all": "^4.1.5",
+    "tailwindcss": "^3.1.4",
     "typescript": "^4.6.4"
   },
   "engines": {

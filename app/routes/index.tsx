@@ -8,12 +8,15 @@ export async function loader() {
 export default function Index() {
   const data = useLoaderDataTyped<typeof loader>()
   return (
-    <div>
-      <ul>
+    <main className="fixed inset-0 flex">
+      <section className="bg-slate-800 overflow-y-auto shadow-md">
         {data.items.map((font) => (
-          <li key={font.family}>{font.family}</li>
+          <p key={font.family}>{font.family}</p>
         ))}
-      </ul>
-    </div>
+      </section>
+      <section className="flex-1 min-w-0 p-4">
+        <div className="bg-slate-800 rounded-md p-4 shadow-md">test</div>
+      </section>
+    </main>
   )
 }
