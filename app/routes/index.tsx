@@ -1,17 +1,17 @@
-import { useLoaderData } from "@remix-run/react"
-import { googleFontsApiFetch } from "~/modules/gfonts/api.server"
+import { jsonTyped, useLoaderDataTyped } from "remix-typed"
+import { loadFonts } from "~/modules/gfonts/api.server"
 
 export async function loader() {
-  return googleFontsApiFetch()
+  return jsonTyped(await loadFonts())
 }
 
 export default function Index() {
-  const data: { items: any[] } = useLoaderData()
+  const data = useLoaderDataTyped<typeof loader>()
   return (
     <div>
       <ul>
-        {data.items.map((item) => (
-          <li key={item.family}>{item.family}</li>
+        {data.items.map((font) => (
+          <li key={font.family}>{font.family}</li>
         ))}
       </ul>
     </div>
