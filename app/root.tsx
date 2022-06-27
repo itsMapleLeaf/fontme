@@ -6,7 +6,9 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useCatch,
 } from "@remix-run/react"
+import type { CatchBoundaryComponent } from "@remix-run/react/routeModules"
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -29,5 +31,15 @@ export default function App() {
         <LiveReload />
       </body>
     </html>
+  )
+}
+
+export const CatchBoundary: CatchBoundaryComponent = (props) => {
+  const response = useCatch()
+  return (
+    <main>
+      <h1>oops, something went wrong</h1>
+      <p>{response.statusText}</p>
+    </main>
   )
 }
