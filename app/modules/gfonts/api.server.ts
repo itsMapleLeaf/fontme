@@ -1,5 +1,6 @@
 import { inspect } from "util"
 import { raise } from "~/modules/common/error"
+import { cacheGet, cacheSet } from "../redis"
 
 export type FontList = {
   kind: string
@@ -24,6 +25,19 @@ export async function loadFonts(): Promise<FontList> {
   apiUrl.searchParams.set("key", apikey)
   apiUrl.searchParams.set("sort", "popularity")
 
+  const cacheKey = apiUrl.toString()
+  const cachedResult = await cacheGet(cacheKey)
+    .then((result) => result && JSON.parse(result))
+    .catch((error) => {
+      console.warn("Error loading fonts from cache:", error)
+      return undefined
+    })
+
+  if (cachedResult) {
+    console.info("Loaded fonts from cache")
+    return cachedResult
+  }
+
   const response = await fetch(apiUrl.href)
   if (response.status !== 200) {
     const errorData = await response
@@ -42,5 +56,9 @@ export async function loadFonts(): Promise<FontList> {
     })
   }
 
-  return response.json()
+  const data = await response.json()
+  await cacheSet(cacheKey, JSON.stringify(data), {
+    expireAfterSeconds: 60 * 60 * 24 * 7,
+  })
+  return data
 }
