@@ -25,6 +25,7 @@ export async function loadFonts(): Promise<FontList> {
   apiUrl.searchParams.set("key", apikey)
   apiUrl.searchParams.set("sort", "popularity")
 
+  console.time("fetch from cache")
   const cacheKey = apiUrl.toString()
   const cachedResult = await cacheGet(cacheKey)
     .then((result) => result && JSON.parse(result))
@@ -32,12 +33,14 @@ export async function loadFonts(): Promise<FontList> {
       console.warn("Error loading fonts from cache:", error)
       return undefined
     })
+  console.timeEnd("fetch from cache")
 
   if (cachedResult) {
     console.info("Loaded fonts from cache")
     return cachedResult
   }
 
+  console.time("fetch from api")
   const response = await fetch(apiUrl.href)
   if (response.status !== 200) {
     const errorData = await response
@@ -57,8 +60,13 @@ export async function loadFonts(): Promise<FontList> {
   }
 
   const data = await response.json()
+  console.timeEnd("fetch from api")
+
+  console.time("cache api data")
   await cacheSet(cacheKey, JSON.stringify(data), {
     expireAfterSeconds: 60 * 60 * 24 * 7,
   })
+  console.timeEnd("cache api data")
+
   return data
 }
