@@ -59,8 +59,8 @@ export async function loadFonts(): Promise<FontList> {
     })
   }
 
-  let data = await response.json()
-  data = { ...data, items: data.items.slice(10) }
+  let data: FontList = await response.json()
+  data = { ...data, items: data.items.slice(0, 10) }
   console.timeEnd("fetch from api")
 
   console.time("cache api data")
