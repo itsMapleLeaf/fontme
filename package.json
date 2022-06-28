@@ -1,4 +1,5 @@
 {
+  "name": "fontme",
   "private": true,
   "sideEffects": false,
   "scripts": {
