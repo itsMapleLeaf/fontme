@@ -2,7 +2,7 @@ import { SearchIcon } from "@heroicons/react/solid"
 import type { DataFunctionArgs } from "@remix-run/node"
 import { Form, useSearchParams } from "@remix-run/react"
 import { matchSorter } from "match-sorter"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { jsonTyped, useLoaderDataTyped } from "remix-typed"
 import { debounce } from "~/modules/common/debounce"
 import { loadFonts } from "~/modules/gfonts/api.server"
@@ -19,23 +19,42 @@ export async function loader({ request }: DataFunctionArgs) {
     })
   }
 
-  return jsonTyped(fonts)
+  return jsonTyped({ fonts, timestamp: new Date().toISOString() })
 }
 
 export default function Index() {
-  const fonts = useLoaderDataTyped<typeof loader>()
+  const { timestamp } = useLoaderDataTyped<typeof loader>()
   return (
     <main className="fixed inset-0 flex">
-      <section className="bg-base-100 overflow-y-auto shadow-md p-4 grid gap-3 content-start w-72">
+      <section className="bg-base-100 overflow-y-auto shadow-md p-4 flex flex-col content-start w-72">
         <SearchForm />
-        {fonts.map((font) => (
-          <p key={font.family}>{font.family}</p>
-        ))}
+        <div className="flex-1 mt-3">
+          {/* reset the state of the list when receiving new data */}
+          <FontList key={timestamp} />
+        </div>
       </section>
       <section className="flex-1 min-w-0 p-4">
         <div className="bg-base-100 rounded-md p-4 shadow-md">test</div>
       </section>
     </main>
+  )
+}
+
+function FontList() {
+  const { fonts } = useLoaderDataTyped<typeof loader>()
+  const [count, setCount] = useState(20)
+  const showMore = () => setCount(count + 20)
+  return (
+    <div className="h-full w-full flex flex-col gap-3">
+      {fonts.slice(0, count).map((font) => (
+        <p key={font.family}>{font.family}</p>
+      ))}
+      {fonts.length > count && (
+        <button type="button" className="btn w-full mt-auto" onClick={showMore}>
+          Show more
+        </button>
+      )}
+    </div>
   )
 }
 
