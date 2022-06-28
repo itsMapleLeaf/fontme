@@ -5,6 +5,7 @@
     "dev": "run-p --print-label --race dev:*",
     "dev:remix": "remix dev",
     "dev:tailwind": "pnpm run tailwind --watch",
+    "dev:docker": "docker-compose up",
     "build": "pnpm run tailwind --minify && remix build",
     "tailwind": "tailwindcss -o app/tailwind.css"
   },
@@ -15,6 +16,7 @@
     "@vercel/node": "^1.15.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "redis": "^4.1.0",
     "remix-typed": "^0.3.0"
   },
   "devDependencies": {
