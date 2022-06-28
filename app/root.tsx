@@ -24,7 +24,7 @@ export const links: LinksFunction = () => [
 
 function Document({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="bg-slate-900 text-slate-50">
+    <html lang="en" className="bg-base-300 text-base-content" data-theme="dark">
       <head>
         <Meta />
         <Links />
