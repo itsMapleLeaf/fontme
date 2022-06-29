@@ -1,0 +1,52 @@
+---
+import { loadFonts } from "../modules/gfonts"
+
+const fonts = await loadFonts()
+---
+
+<!DOCTYPE html>
+<html lang="en" class="bg-base-300">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Generate optimized fonts and CSS for self-hosting Google Fonts">
+  <title>fontme</title>
+</head>
+
+<body>
+  <main class="fixed inset-0 flex">
+    <section class="bg-base-100 overflow-y-auto shadow-md p-4 flex flex-col content-start w-72">
+      <form class="relative">
+        <input class="input input-bordered w-full pr-10" name="search" placeholder="Search..." />
+        <!--
+          defaultValue={params.get("search") ?? "" } onChange={(event)=> {
+        const newParams = new URLSearchParams(params)
+        if (event.target.value) {
+        newParams.set("search", event.target.value)
+        } else {
+        newParams.delete("search")
+        }
+        setParamsDebounced(newParams)
+        }} -->
+        <button type="submit" class="btn btn-ghost p-3 absolute right-0 inset-y-0" title="Submit">
+          <!-- <SearchIcon class="w-5" /> -->
+          search
+        </button>
+      </form>
+      <div class="flex-1 mt-3">
+        <div class="h-full w-full flex flex-col gap-3">
+          {fonts.map((font) => (
+          <p>{font.family}</p>
+          ))}
+        </div>
+      </div>
+    </section>
+    <section class="flex-1 min-w-0 p-4">
+      <div class="bg-base-100 rounded-md p-4 shadow-md">test</div>
+    </section>
+  </main>
+</body>
+
+</html>
