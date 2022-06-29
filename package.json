@@ -8,20 +8,27 @@
     "dev:astro": "astro dev",
     "dev:docker": "docker-compose up",
     "build": "astro build",
-    "start": "node server.mjs"
+    "start": "node server.mjs | pino-colada"
   },
   "dependencies": {
     "@astrojs/node": "^0.1.2",
     "@headlessui/react": "^1.6.5",
     "@heroicons/react": "^1.0.6",
+    "@tinyhttp/app": "^2.0.22",
+    "compression": "^1.7.4",
     "daisyui": "^2.17.0",
     "history": "^5.3.0",
     "match-sorter": "^6.3.1",
+    "pino": "^8.1.0",
+    "pino-colada": "^2.2.2",
+    "pino-http": "^8.1.0",
     "redis": "^4.1.0",
+    "sirv": "^2.0.2",
     "zod": "^3.17.3"
   },
   "devDependencies": {
     "@astrojs/tailwind": "^0.2.2",
+    "@types/compression": "^1.7.2",
     "@types/node": "^18.0.0",
     "astro": "1.0.0-beta.58",
     "eslint": "^8.18.0",
