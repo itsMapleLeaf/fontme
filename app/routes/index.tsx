@@ -1,36 +1,44 @@
 import { SearchIcon } from "@heroicons/react/solid"
-import type { DataFunctionArgs } from "@remix-run/node"
-import { Form, useSearchParams } from "@remix-run/react"
+import { DataFunctionArgs, Deferrable, deferred } from "@remix-run/node"
+import {
+  Deferred,
+  Form,
+  useLoaderData,
+  useSearchParams,
+} from "@remix-run/react"
 import { matchSorter } from "match-sorter"
-import { useMemo, useState } from "react"
-import { jsonTyped, useLoaderDataTyped } from "remix-typed"
+import { useMemo } from "react"
 import { debounce } from "~/modules/common/debounce"
-import { loadFonts } from "~/modules/gfonts/api.server"
+import { Font, loadFonts } from "~/modules/gfonts/api.server"
+
+type LoaderData = {
+  fonts: Deferrable<Font[]>
+}
 
 export async function loader({ request }: DataFunctionArgs) {
-  let fonts = (await loadFonts()).items
-
   const params = new URL(request.url).searchParams
-
   const searchQuery = params.get("search")
-  if (searchQuery) {
-    fonts = matchSorter(fonts, searchQuery, {
-      keys: ["family", "category", "subsets", "variants"],
-    })
-  }
 
-  return jsonTyped({ fonts, timestamp: new Date().toISOString() })
+  return deferred<LoaderData>({
+    fonts: loadFonts().then((fonts) => {
+      if (!searchQuery) return fonts
+      return matchSorter(fonts, searchQuery, {
+        keys: ["family", "category", "subsets", "variants"],
+      })
+    }),
+  })
 }
 
 export default function Index() {
-  const { timestamp } = useLoaderDataTyped<typeof loader>()
+  const { fonts } = useLoaderData<LoaderData>()
   return (
     <main className="fixed inset-0 flex">
       <section className="bg-base-100 overflow-y-auto shadow-md p-4 flex flex-col content-start w-72">
         <SearchForm />
         <div className="flex-1 mt-3">
-          {/* reset the state of the list when receiving new data */}
-          <FontList key={timestamp} />
+          <Deferred value={fonts} fallback={<p>Loading...</p>}>
+            {(fonts) => <FontList fonts={fonts} />}
+          </Deferred>
         </div>
       </section>
       <section className="flex-1 min-w-0 p-4">
@@ -40,20 +48,12 @@ export default function Index() {
   )
 }
 
-function FontList() {
-  const { fonts } = useLoaderDataTyped<typeof loader>()
-  const [count, setCount] = useState(20)
-  const showMore = () => setCount(count + 20)
+function FontList({ fonts }: { fonts: Font[] }) {
   return (
     <div className="h-full w-full flex flex-col gap-3">
-      {fonts.slice(0, count).map((font) => (
+      {fonts.map((font) => (
         <p key={font.family}>{font.family}</p>
       ))}
-      {fonts.length > count && (
-        <button type="button" className="btn w-full mt-auto" onClick={showMore}>
-          Show more
-        </button>
-      )}
     </div>
   )
 }

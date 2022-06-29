@@ -1,47 +1,42 @@
 import { inspect } from "util"
+import * as z from "zod"
 import { raise } from "~/modules/common/error"
 import { cacheGet, cacheSet } from "../redis"
 
-export type FontList = {
-  kind: string
-  items: Font[]
-}
+export type Font = z.infer<typeof fontSchema>
+const fontSchema = z
+  .object({
+    family: z.string(),
+    variants: z.array(z.string()),
+  })
+  .passthrough()
 
-export type Font = {
-  family: string
-  variants: string[]
-  subsets: string[]
-  version: string
-  lastModified: string
-  files: Record<string, string>
-  category: "display" | "handwriting" | "monospace" | "sans-serif" | "serif"
-}
+const fontArraySchema = z.array(fontSchema)
 
-export async function loadFonts(): Promise<FontList> {
-  const apikey =
-    process.env.GOOGLE_API_KEY ?? raise("GOOGLE_API_KEY is not set")
+const apiKey = process.env.GOOGLE_API_KEY ?? raise("GOOGLE_API_KEY is not set")
 
+export async function loadFonts(): Promise<Font[]> {
   const apiUrl = new URL("https://www.googleapis.com/webfonts/v1/webfonts")
-  apiUrl.searchParams.set("key", apikey)
+  apiUrl.searchParams.set("key", apiKey)
   apiUrl.searchParams.set("sort", "popularity")
+  return (
+    (await loadFontsFromCache(apiUrl.href)) ||
+    (await loadFontsFromApi(apiUrl.href))
+  )
+}
 
-  console.time("fetch from cache")
-  const cacheKey = apiUrl.toString()
-  const cachedResult = await cacheGet(cacheKey)
-    .then((result) => result && JSON.parse(result))
-    .catch((error) => {
-      console.warn("Error loading fonts from cache:", error)
-      return undefined
-    })
-  console.timeEnd("fetch from cache")
-
-  if (cachedResult) {
-    console.info("Loaded fonts from cache")
-    return cachedResult
+async function loadFontsFromCache(key: string) {
+  try {
+    const result = await cacheGet(key)
+    return fontArraySchema.parse(result && JSON.parse(result))
+  } catch (error) {
+    console.warn("Error loading fonts from cache:", error)
+    return undefined
   }
+}
 
-  console.time("fetch from api")
-  const response = await fetch(apiUrl.href)
+async function loadFontsFromApi(url: string) {
+  const response = await fetch(url)
   if (response.status !== 200) {
     const errorData = await response
       .clone()
@@ -59,15 +54,8 @@ export async function loadFonts(): Promise<FontList> {
     })
   }
 
-  let data: FontList = await response.json()
-  // data = { ...data, items: data.items.slice(0, 10) }
-  console.timeEnd("fetch from api")
-
-  console.time("cache api data")
-  await cacheSet(cacheKey, JSON.stringify(data), {
-    expireAfterSeconds: 60 * 60 * 24 * 7,
-  })
-  console.timeEnd("cache api data")
-
-  return data
+  const data = await response.json()
+  const fonts = fontArraySchema.parse(data.items)
+  await cacheSet(url, JSON.stringify(fonts))
+  return fonts
 }
