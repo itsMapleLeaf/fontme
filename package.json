@@ -18,20 +18,22 @@
     "@remix-run/react": "0.0.0-experimental-d28d77b8",
     "daisyui": "^2.17.0",
     "dotenv": "^16.0.1",
+    "isbot": "^3.5.0",
     "match-sorter": "^6.3.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "redis": "^4.1.0",
-    "remix-typed": "^0.3.0"
+    "remix-typed": "^0.3.0",
+    "zod": "^3.17.3"
   },
   "devDependencies": {
     "@remix-run/dev": "0.0.0-experimental-d28d77b8",
     "@remix-run/serve": "0.0.0-experimental-d28d77b8",
-    "@types/react": "^17.0.45",
-    "@types/react-dom": "^17.0.17",
-    "eslint": "^8.15.0",
+    "@types/react": "^18.0.14",
+    "@types/react-dom": "^18.0.5",
+    "eslint": "^8.18.0",
     "npm-run-all": "^4.1.5",
     "tailwindcss": "^3.1.4",
-    "typescript": "^4.6.4"
+    "typescript": "^4.7.4"
   }
 }
