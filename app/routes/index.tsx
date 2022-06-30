@@ -1,4 +1,8 @@
-import { SearchIcon } from "@heroicons/react/solid"
+import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  SearchIcon,
+} from "@heroicons/react/solid"
 import { DataFunctionArgs, Deferrable, deferred } from "@remix-run/node"
 import {
   Deferred,
@@ -10,7 +14,9 @@ import { matchSorter } from "match-sorter"
 import { useMemo } from "react"
 import { Virtuoso } from "react-virtuoso"
 import { debounce } from "~/modules/common/debounce"
+import { useFontSelection } from "~/modules/font-selection"
 import { Font, loadFonts } from "~/modules/gfonts/api.server"
+import { Collapse, CollapseHeaderProps } from "~/modules/ui/collapse"
 
 type LoaderData = {
   fonts: Deferrable<Font[]>
@@ -38,10 +44,17 @@ export default function Index() {
         {(fonts) => <FontList fonts={fonts} />}
       </Deferred>
       <section className="flex-1 min-w-0 p-4">
-        <div className="bg-base-100 rounded-md p-4 shadow-md">test</div>
+        <div className="bg-base-100 rounded-md p-4 shadow-md">
+          <FontCss />
+        </div>
       </section>
     </main>
   )
+}
+
+function FontCss() {
+  const { selections } = useFontSelection()
+  return <pre>{JSON.stringify(selections, undefined, 2)}</pre>
 }
 
 function FontList({ fonts }: { fonts: Font[] }) {
@@ -51,12 +64,18 @@ function FontList({ fonts }: { fonts: Font[] }) {
         <SearchForm />
       </div>
       <Virtuoso
-        className="flex-1"
+        className="flex-1 w-full"
+        style={{ transform: "translateZ(0)" }}
+        initialItemCount={30}
         totalCount={fonts.length}
         overscan={20}
-        itemContent={(index) => (
-          <p className="px-3 py-1.5">{fonts[index].family}</p>
-        )}
+        cellSpacing={12}
+        itemContent={(index) => {
+          const font = fonts[index]
+          return (
+            <div className="mb-1 px-3">{font && <FontItem font={font} />}</div>
+          )
+        }}
       />
     </section>
   )
@@ -95,5 +114,75 @@ function SearchForm() {
         <SearchIcon className="w-5" />
       </button>
     </Form>
+  )
+}
+
+function FontItem({ font }: { font: Font }) {
+  return (
+    <Collapse
+      stateKey={`font-item:${font.family}`}
+      header={(props) => <FontItemHeader {...props} font={font} />}
+    >
+      <div className="px-3 space-y-1 mt-2">
+        {font.variants.map((variant) => (
+          <FontItemVariant
+            key={variant}
+            family={font.family}
+            variant={variant}
+          />
+        ))}
+      </div>
+    </Collapse>
+  )
+}
+
+function FontItemHeader({
+  font,
+  visible,
+  toggle,
+}: { font: Font } & CollapseHeaderProps) {
+  return (
+    <button
+      className="text-left flex w-full items-center py-2 hover:bg-base-200 rounded-md transition text-lg"
+      onClick={toggle}
+    >
+      {visible ? (
+        <ChevronDownIcon className="w-6" />
+      ) : (
+        <ChevronRightIcon className="w-6" />
+      )}
+      <span>{font.family}</span>
+    </button>
+  )
+}
+
+function FontItemVariant({
+  family,
+  variant,
+}: {
+  family: string
+  variant: string
+}) {
+  const selections = useFontSelection()
+
+  return (
+    <label
+      key={variant}
+      className="flex gap-2 items-center cursor-pointer hover:bg-base-200 focus:bg-base-200 rounded-md p-2 leading-none transition select-none"
+    >
+      <input
+        type="checkbox"
+        className="checkbox"
+        checked={selections.isSelected(family, variant)}
+        onChange={(event) => {
+          if (event.target.checked) {
+            selections.select(family, variant)
+          } else {
+            selections.deselect(family, variant)
+          }
+        }}
+      />
+      {variant}
+    </label>
   )
 }
