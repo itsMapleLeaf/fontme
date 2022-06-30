@@ -95,10 +95,19 @@ function FontItemVariant({
         className="checkbox"
         checked={isChecked}
         onChange={(event) => {
-          const newParams = event.target.checked
+          const newSelector = event.target.checked
             ? selector.select(family, variant)
             : selector.deselect(family, variant)
-          setParams({ ...params, fonts: newParams.toParamString() })
+
+          const fontsParam = newSelector.toParamString()
+
+          const newParams = new URLSearchParams(params)
+          if (fontsParam) {
+            newParams.set("fonts", fontsParam)
+          } else {
+            newParams.delete("fonts")
+          }
+          setParams(newParams)
         }}
       />
       {variant}

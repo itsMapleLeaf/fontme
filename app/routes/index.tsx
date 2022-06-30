@@ -1,33 +1,29 @@
-import { DataFunctionArgs, Deferrable, deferred } from "@remix-run/node"
-import { Deferred, useLoaderData, useSearchParams } from "@remix-run/react"
+import { useSearchParams } from "@remix-run/react"
 import { matchSorter } from "match-sorter"
+import { useEffect } from "react"
 import { FontSelector } from "~/modules/font-selection"
-import { Font, loadFonts } from "~/modules/fonts/api.server"
 import { FontList } from "~/modules/fonts/font-list"
 import { SearchForm } from "~/modules/ui/search-form"
-
-type LoaderData = {
-  fonts: Deferrable<Font[]>
-}
+import { useFontsFetcher } from "~/routes/data/fonts"
 
 const searchParamName = "search"
 
-export async function loader({ request }: DataFunctionArgs) {
-  const params = new URL(request.url).searchParams
-  const searchQuery = params.get(searchParamName)
-
-  return deferred<LoaderData>({
-    fonts: loadFonts().then((fonts) => {
-      if (!searchQuery) return fonts
-      return matchSorter(fonts, searchQuery, {
-        keys: ["family", "category", "subsets", "variants"],
-      })
-    }),
-  })
-}
-
 export default function Index() {
-  const { fonts } = useLoaderData<LoaderData>()
+  const [params] = useSearchParams()
+  const searchQuery = params.get(searchParamName) ?? ""
+
+  const fetcher = useFontsFetcher()
+  useEffect(() => {
+    if (fetcher.type === "init") {
+      fetcher.load()
+    }
+  })
+
+  let fonts = fetcher.data ?? []
+  if (searchQuery) {
+    fonts = matchSorter(fonts, searchQuery, { keys: ["family"] })
+  }
+
   return (
     <main className="fixed inset-0 flex">
       <section className="bg-base-100 overflow-y-auto shadow-md flex flex-col content-start w-72">
@@ -35,9 +31,11 @@ export default function Index() {
           <SearchForm paramName={searchParamName} />
         </div>
         <div className="flex-1">
-          <Deferred value={fonts} fallback={<p>Loading...</p>}>
-            {(fonts) => <FontList fonts={fonts} />}
-          </Deferred>
+          {fetcher.state === "idle" ? (
+            <FontList fonts={fonts} />
+          ) : (
+            <p className="p-3 text-center opacity-50">Loading...</p>
+          )}
         </div>
       </section>
       <section className="flex-1 min-w-0 p-4">
