@@ -8,6 +8,7 @@ import {
 } from "@remix-run/react"
 import { matchSorter } from "match-sorter"
 import { useMemo } from "react"
+import { Virtuoso } from "react-virtuoso"
 import { debounce } from "~/modules/common/debounce"
 import { Font, loadFonts } from "~/modules/gfonts/api.server"
 
@@ -33,14 +34,9 @@ export default function Index() {
   const { fonts } = useLoaderData<LoaderData>()
   return (
     <main className="fixed inset-0 flex">
-      <section className="bg-base-100 overflow-y-auto shadow-md p-4 flex flex-col content-start w-72">
-        <SearchForm />
-        <div className="flex-1 mt-3">
-          <Deferred value={fonts} fallback={<p>Loading...</p>}>
-            {(fonts) => <FontList fonts={fonts} />}
-          </Deferred>
-        </div>
-      </section>
+      <Deferred value={fonts} fallback={<p>Loading...</p>}>
+        {(fonts) => <FontList fonts={fonts} />}
+      </Deferred>
       <section className="flex-1 min-w-0 p-4">
         <div className="bg-base-100 rounded-md p-4 shadow-md">test</div>
       </section>
@@ -50,11 +46,19 @@ export default function Index() {
 
 function FontList({ fonts }: { fonts: Font[] }) {
   return (
-    <div className="h-full w-full flex flex-col gap-3">
-      {fonts.map((font) => (
-        <p key={font.family}>{font.family}</p>
-      ))}
-    </div>
+    <section className="bg-base-100 overflow-y-auto shadow-md flex flex-col content-start w-72">
+      <div className="p-4">
+        <SearchForm />
+      </div>
+      <Virtuoso
+        className="flex-1"
+        totalCount={fonts.length}
+        overscan={20}
+        itemContent={(index) => (
+          <p className="px-3 py-1.5">{fonts[index].family}</p>
+        )}
+      />
+    </section>
   )
 }
 
@@ -62,7 +66,7 @@ function SearchForm() {
   const [params, setParams] = useSearchParams()
 
   const setParamsDebounced = useMemo(
-    () => debounce(setParams, 500),
+    () => debounce(setParams, 300),
     [setParams],
   )
 
@@ -80,7 +84,7 @@ function SearchForm() {
           } else {
             newParams.delete("search")
           }
-          setParamsDebounced(newParams)
+          setParamsDebounced(newParams, { replace: true })
         }}
       />
       <button
