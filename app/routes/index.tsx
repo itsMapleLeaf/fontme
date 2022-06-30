@@ -1,28 +1,28 @@
-import { useSearchParams } from "@remix-run/react"
-import { matchSorter } from "match-sorter"
-import { useEffect } from "react"
+import { DataFunctionArgs, Deferrable, deferred } from "@remix-run/node"
+import { Deferred, useLoaderData, useSearchParams } from "@remix-run/react"
 import { FontSelector } from "~/modules/font-selection"
-import { FontList } from "~/modules/fonts/font-list"
+import { Font, loadFonts } from "~/modules/fonts/api.server"
+import { FontList, FontListFallback } from "~/modules/fonts/font-list"
 import { SearchForm } from "~/modules/ui/search-form"
-import { useFontsFetcher } from "~/routes/data/fonts"
 
 const searchParamName = "search"
 
+type LoaderData = {
+  fonts: Deferrable<Font[]>
+}
+
+export async function loader({ request }: DataFunctionArgs) {
+  return deferred<LoaderData>({ fonts: loadFonts() })
+}
+
+// don't ever reload this data; it's huge and rarely changes
+export const unstable_shouldReload = () => false
+
 export default function Index() {
+  const { fonts } = useLoaderData<LoaderData>()
+
   const [params] = useSearchParams()
   const searchQuery = params.get(searchParamName) ?? ""
-
-  const fetcher = useFontsFetcher()
-  useEffect(() => {
-    if (fetcher.type === "init") {
-      fetcher.load()
-    }
-  })
-
-  let fonts = fetcher.data ?? []
-  if (searchQuery) {
-    fonts = matchSorter(fonts, searchQuery, { keys: ["family"] })
-  }
 
   return (
     <main className="fixed inset-0 flex">
@@ -31,11 +31,9 @@ export default function Index() {
           <SearchForm paramName={searchParamName} />
         </div>
         <div className="flex-1">
-          {fetcher.state === "idle" ? (
-            <FontList fonts={fonts} />
-          ) : (
-            <p className="p-3 text-center opacity-50">Loading...</p>
-          )}
+          <Deferred value={fonts} fallback={<FontListFallback />}>
+            {(fonts) => <FontList fonts={fonts} searchQuery={searchQuery} />}
+          </Deferred>
         </div>
       </section>
       <section className="flex-1 min-w-0 p-4">

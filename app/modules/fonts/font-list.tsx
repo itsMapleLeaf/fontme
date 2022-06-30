@@ -5,12 +5,22 @@ import {
 } from "@heroicons/react/solid"
 import { useSearchParams, useTransition } from "@remix-run/react"
 import clsx from "clsx"
+import { matchSorter } from "match-sorter"
 import { Virtuoso } from "react-virtuoso"
 import { FontSelector } from "~/modules/font-selection"
 import { Font } from "~/modules/fonts/api.server"
 import { Collapse, CollapseHeaderProps } from "~/modules/ui/collapse"
 
-export function FontList({ fonts }: { fonts: Font[] }) {
+export function FontList({
+  fonts,
+  searchQuery,
+}: {
+  fonts: Font[]
+  searchQuery: string
+}) {
+  if (searchQuery) {
+    fonts = matchSorter(fonts, searchQuery, { keys: ["family"] })
+  }
   return (
     <Virtuoso
       className="w-full h-full"
@@ -27,6 +37,10 @@ export function FontList({ fonts }: { fonts: Font[] }) {
       }}
     />
   )
+}
+
+export function FontListFallback() {
+  return <p className="p-3 text-center opacity-50">Loading...</p>
 }
 
 function FontItem({ font }: { font: Font }) {
