@@ -17,6 +17,7 @@ specifiers:
   npm-run-all: ^4.1.5
   react: ^18.2.0
   react-dom: ^18.2.0
+  react-virtuoso: ^2.16.1
   redis: ^4.1.0
   remix-typed: ^0.3.0
   tailwindcss: ^3.1.4
@@ -34,6 +35,7 @@ dependencies:
   match-sorter: 6.3.1
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  react-virtuoso: 2.16.1_biqbaboplfbrettd7655fr4n2y
   redis: 4.1.0
   remix-typed: 0.3.0_so3lor2zny5ptugn3mo32xajqe
   zod: 3.17.3
@@ -1795,6 +1797,20 @@ packages:
   /@types/unist/2.0.6:
     resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
     dev: true
+
+  /@virtuoso.dev/react-urx/0.2.13_react@18.2.0:
+    resolution: {integrity: sha512-MY0ugBDjFb5Xt8v2HY7MKcRGqw/3gTpMlLXId2EwQvYJoC8sP7nnXjAxcBtTB50KTZhO0SbzsFimaZ7pSdApwA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+    dependencies:
+      '@virtuoso.dev/urx': 0.2.13
+      react: 18.2.0
+    dev: false
+
+  /@virtuoso.dev/urx/0.2.13:
+    resolution: {integrity: sha512-iirJNv92A1ZWxoOHHDYW/1KPoi83939o83iUBQHIim0i3tMeSKEh+bxhJdTHQ86Mr4uXx9xGUTq69cp52ZP8Xw==}
+    dev: false
 
   /@web3-storage/multipart-parser/1.0.0:
     resolution: {integrity: sha512-BEO6al7BYqcnfX15W2cnGR+Q566ACXAT9UQykORCWW80lmkpWsnEob6zJS1ZVBKsSJC8+7vJkHwlp+lXG1UCdw==}
@@ -5728,6 +5744,19 @@ packages:
     dependencies:
       history: 5.3.0
       react: 18.2.0
+
+  /react-virtuoso/2.16.1_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-WpcHZedUe00XYSQ56KcdYmWy/oaiPPuweTYemC9gl8CbjchLTKqLPCJa51Yv32U9oj1XPAEMfxuaXM7NTtjOiw==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16 || >=17 || >= 18'
+      react-dom: '>=16 || >=17 || >= 18'
+    dependencies:
+      '@virtuoso.dev/react-urx': 0.2.13_react@18.2.0
+      '@virtuoso.dev/urx': 0.2.13
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
 
   /react/18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
