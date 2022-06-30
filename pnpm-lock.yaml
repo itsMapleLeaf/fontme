@@ -9,6 +9,7 @@ specifiers:
   '@remix-run/serve': 0.0.0-experimental-d28d77b8
   '@types/react': ^18.0.14
   '@types/react-dom': ^18.0.5
+  clsx: ^1.1.1
   daisyui: ^2.17.0
   dotenv: ^16.0.1
   eslint: ^8.18.0
@@ -30,6 +31,7 @@ dependencies:
   '@heroicons/react': 1.0.6_react@18.2.0
   '@remix-run/node': 0.0.0-experimental-d28d77b8_biqbaboplfbrettd7655fr4n2y
   '@remix-run/react': 0.0.0-experimental-d28d77b8_biqbaboplfbrettd7655fr4n2y
+  clsx: 1.1.1
   daisyui: 2.17.0
   dotenv: 16.0.1
   isbot: 3.5.0
@@ -2429,6 +2431,11 @@ packages:
     resolution: {integrity: sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg==}
     engines: {node: '>=0.8'}
     dev: true
+
+  /clsx/1.1.1:
+    resolution: {integrity: sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==}
+    engines: {node: '>=6'}
+    dev: false
 
   /cluster-key-slot/1.1.0:
     resolution: {integrity: sha512-2Nii8p3RwAPiFwsnZvukotvow2rIHM+yQ6ZcBXGHdniadkYGZYiGmkHJIbZPIV9nfv7m/U1IPMVVcAhoWFeklw==}

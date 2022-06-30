@@ -17,6 +17,7 @@
     "@heroicons/react": "^1.0.6",
     "@remix-run/node": "0.0.0-experimental-d28d77b8",
     "@remix-run/react": "0.0.0-experimental-d28d77b8",
+    "clsx": "^1.1.1",
     "daisyui": "^2.17.0",
     "dotenv": "^16.0.1",
     "isbot": "^3.5.0",

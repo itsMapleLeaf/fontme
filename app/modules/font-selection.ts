@@ -23,7 +23,12 @@ export class FontSelector {
       .map(([family, variants]) => `${family}:${variants.join(",")}`)
       .join(";")
 
-  isSelected = (family: string, variant: string) => {
+  isFamilySelected = (family: string) =>
+    Object.entries(this.selections).some(([entryFamily, variants]) => {
+      return caseInsensitiveEquals(family, entryFamily) && variants?.length > 0
+    })
+
+  isVariantSelected = (family: string, variant: string) => {
     const variants = Object.entries(this.selections).find(([familyName]) =>
       caseInsensitiveEquals(familyName, family),
     )?.[1]
