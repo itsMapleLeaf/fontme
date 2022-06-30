@@ -1,7 +1,7 @@
 import { DataFunctionArgs, Deferrable, deferred } from "@remix-run/node"
-import { Deferred, useLoaderData } from "@remix-run/react"
+import { Deferred, useLoaderData, useSearchParams } from "@remix-run/react"
 import { matchSorter } from "match-sorter"
-import { useFontSelection } from "~/modules/font-selection"
+import { FontSelector } from "~/modules/font-selection"
 import { Font, loadFonts } from "~/modules/fonts/api.server"
 import { FontList } from "~/modules/fonts/font-list"
 import { SearchForm } from "~/modules/ui/search-form"
@@ -50,6 +50,14 @@ export default function Index() {
 }
 
 function FontCss() {
-  const { selections } = useFontSelection()
-  return <pre>{JSON.stringify(selections, undefined, 2)}</pre>
+  const [params] = useSearchParams()
+  return (
+    <pre>
+      {JSON.stringify(
+        FontSelector.fromParamString(params.get("fonts") ?? ""),
+        undefined,
+        2,
+      )}
+    </pre>
+  )
 }

@@ -1,74 +1,61 @@
-import { useSearchParams } from "@remix-run/react"
+export type FontSelections = {
+  [family: string]: string[]
+}
 
-// query param format: ?selection=Roboto:400,400italic;Roboto+Mono:400,400italic
-export function useFontSelection() {
-  const [params, setParams] = useSearchParams()
+export class FontSelector {
+  constructor(readonly selections: FontSelections) {}
 
-  const selections = parseFontSelectionSearchParam(params.get("fonts") ?? "")
+  // query param format: ?selection=Roboto:400,400italic;Roboto+Mono:400,400italic
+  static fromParamString(paramString: string): FontSelector {
+    const fontSelections: { [family: string]: string[] } = {}
+    for (const selectionPair of paramString.split(";")) {
+      const [family, variants] = selectionPair.split(":")
+      if (family && variants) {
+        fontSelections[family] = variants?.split(",") ?? []
+      }
+    }
+    return new FontSelector(fontSelections)
+  }
 
-  const isSelected = (family: string, variant: string) => {
-    const variants = Object.entries(selections).find(([familyName]) =>
+  toParamString = () =>
+    Object.entries(this.selections)
+      .filter(([, variants]) => variants.length > 0)
+      .map(([family, variants]) => `${family}:${variants.join(",")}`)
+      .join(";")
+
+  isSelected = (family: string, variant: string) => {
+    const variants = Object.entries(this.selections).find(([familyName]) =>
       caseInsensitiveEquals(familyName, family),
     )?.[1]
     return variants?.some((v) => caseInsensitiveEquals(v, variant)) ?? false
   }
 
-  const select = (family: string, variant: string) => {
+  select = (family: string, variant: string) => {
     const familyKey =
-      Object.keys(selections).find((familyName) =>
+      Object.keys(this.selections).find((familyName) =>
         caseInsensitiveEquals(familyName, family),
       ) || family
 
-    setParams({
-      ...Object.fromEntries(params),
-      fonts: encodeFontSelectionSearchParam({
-        ...selections,
-        [familyKey]: [...(selections[family] ?? []), variant],
-      }),
+    return new FontSelector({
+      ...this.selections,
+      [familyKey]: [...(this.selections[family] ?? []), variant],
     })
   }
 
-  const deselect = (family: string, variant: string) => {
+  deselect = (family: string, variant: string) => {
     const familyKey =
-      Object.keys(selections).find((familyName) =>
+      Object.keys(this.selections).find((familyName) =>
         caseInsensitiveEquals(familyName, family),
       ) || family
 
-    setParams({
-      ...Object.fromEntries(params),
-      fonts: encodeFontSelectionSearchParam({
-        ...selections,
-        [familyKey]:
-          selections[family]?.filter(
-            (v) => !caseInsensitiveEquals(v, variant),
-          ) ?? [],
-      }),
+    return new FontSelector({
+      ...this.selections,
+      [familyKey]:
+        this.selections[family]?.filter(
+          (v) => !caseInsensitiveEquals(v, variant),
+        ) ?? [],
     })
   }
-
-  return { selections, isSelected, select, deselect }
-}
-
-export function parseFontSelectionSearchParam(searchParam: string) {
-  const fontSelections: { [family: string]: string[] } = {}
-
-  for (const selectionPair of searchParam.split(";")) {
-    const [family, variants] = selectionPair.split(":")
-    if (family && variants) {
-      fontSelections[family] = variants?.split(",") ?? []
-    }
-  }
-
-  return fontSelections
-}
-
-export function encodeFontSelectionSearchParam(fontSelections: {
-  [family: string]: string[]
-}) {
-  return Object.entries(fontSelections)
-    .filter(([, variants]) => variants.length > 0)
-    .map(([family, variants]) => `${family}:${variants.join(",")}`)
-    .join(";")
 }
 
 const caseInsensitiveEquals = (a: string, b: string) =>

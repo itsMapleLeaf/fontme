@@ -1,6 +1,7 @@
 import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/solid"
+import { useSearchParams, useTransition } from "@remix-run/react"
 import { Virtuoso } from "react-virtuoso"
-import { useFontSelection } from "~/modules/font-selection"
+import { FontSelector } from "~/modules/font-selection"
 import { Font } from "~/modules/fonts/api.server"
 import { Collapse, CollapseHeaderProps } from "~/modules/ui/collapse"
 
@@ -69,7 +70,20 @@ function FontItemVariant({
   family: string
   variant: string
 }) {
-  const selections = useFontSelection()
+  const [params, setParams] = useSearchParams()
+  const selector = FontSelector.fromParamString(params.get("fonts") ?? "")
+
+  const transition = useTransition()
+  const pendingSelector = transition.location
+    ? FontSelector.fromParamString(
+        new URLSearchParams(transition.location.search).get("fonts") ?? "",
+      )
+    : undefined
+
+  // checking the transition selections for optimistic UI
+  const isChecked =
+    pendingSelector?.isSelected(family, variant) ??
+    selector.isSelected(family, variant)
 
   return (
     <label
@@ -79,13 +93,12 @@ function FontItemVariant({
       <input
         type="checkbox"
         className="checkbox"
-        checked={selections.isSelected(family, variant)}
+        checked={isChecked}
         onChange={(event) => {
-          if (event.target.checked) {
-            selections.select(family, variant)
-          } else {
-            selections.deselect(family, variant)
-          }
+          const newParams = event.target.checked
+            ? selector.select(family, variant)
+            : selector.deselect(family, variant)
+          setParams({ ...params, fonts: newParams.toParamString() })
         }}
       />
       {variant}
