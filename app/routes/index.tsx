@@ -26,7 +26,7 @@ export default function Index() {
 
   return (
     <main className="fixed inset-0 flex">
-      <section className="bg-base-100 overflow-y-auto shadow-md flex flex-col content-start w-72">
+      <section className="bg-base-100 overflow-y-auto shadow-md flex flex-col content-start w-80">
         <div className="p-4">
           <SearchForm paramName={searchParamName} />
         </div>

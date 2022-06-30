@@ -6,6 +6,7 @@ import {
 import { useSearchParams, useTransition } from "@remix-run/react"
 import clsx from "clsx"
 import { matchSorter } from "match-sorter"
+import { useEffect, useState } from "react"
 import { Virtuoso } from "react-virtuoso"
 import { FontSelector } from "~/modules/font-selection"
 import { Font } from "~/modules/fonts/api.server"
@@ -27,7 +28,7 @@ export function FontList({
       style={{ transform: "translateZ(0)" }}
       initialItemCount={30}
       totalCount={fonts.length}
-      overscan={20}
+      overscan={500}
       cellSpacing={12}
       itemContent={(index) => {
         const font = fonts[index]
@@ -69,6 +70,9 @@ function FontItemHeader({
 }: { font: Font } & CollapseHeaderProps) {
   const [params] = useSearchParams()
   const selector = FontSelector.fromParamString(params.get("fonts") ?? "")
+
+  const loaded = useFontLink(font.family, "regular")
+
   return (
     <button
       type="button"
@@ -80,7 +84,15 @@ function FontItemHeader({
       ) : (
         <ChevronRightIcon className="w-6" />
       )}
-      <span>{font.family}</span>
+      <span
+        style={{ fontFamily: font.family }}
+        className={clsx(
+          "transition ease-out",
+          loaded ? "opacity-100" : "opacity-0 translate-x-2",
+        )}
+      >
+        {font.family}
+      </span>
       <CheckCircleIcon
         className={clsx(
           "text-primary/50 w-6 ml-auto transition-opacity",
@@ -113,6 +125,8 @@ function FontItemVariant({
     pendingSelector?.isVariantSelected(family, variant) ??
     selector.isVariantSelected(family, variant)
 
+  const loaded = useFontLink(family, variant)
+
   return (
     <label
       key={variant}
@@ -138,7 +152,52 @@ function FontItemVariant({
           setParams(newParams)
         }}
       />
-      {variant}
+      <span
+        style={{
+          fontFamily: family,
+          fontWeight: variant === "regular" ? 400 : variant.slice(0, 3),
+          fontStyle: variant.endsWith("italic") ? "italic" : "normal",
+        }}
+        className={clsx(
+          "transition ease-out",
+          loaded ? "opacity-100" : "opacity-0 translate-x-2",
+        )}
+      >
+        {family}
+      </span>
+      <span className="ml-auto text-sm opacity-50 italic">{variant}</span>
     </label>
   )
+}
+
+function useFontLink(family: string, variant: string) {
+  const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    const getVariantParam = () => {
+      if (variant === "regular") return `wght@400`
+      if (variant === "italic") return `ital,wght@1,400`
+      if (variant.endsWith("italic"))
+        return `ital,wght@1,${variant.replace("italic", "")}`
+      return `wght@${variant}`
+    }
+
+    const params = new URLSearchParams()
+    params.set("family", `${family}:${getVariantParam()}`)
+    params.set("display", "block")
+    params.set("text", family)
+
+    const link = document.createElement("link")
+    link.href = `https://fonts.googleapis.com/css2?${params}`
+    link.rel = "stylesheet"
+
+    link.addEventListener("load", () => setLoaded(true))
+    link.addEventListener("error", () => setLoaded(true))
+    document.head.append(link)
+    return () => {
+      link.remove()
+    }
+  }, [family, variant])
+
+  return loaded
 }
