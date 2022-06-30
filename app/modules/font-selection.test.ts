@@ -1,24 +1,22 @@
 import { expect, test } from "vitest"
-import {
-  encodeFontSelectionSearchParam,
-  parseFontSelectionSearchParam,
-} from "./font-selection"
+import { FontSelector } from "./font-selection"
 
-test("parseFontSelectionSearchParam", () => {
+test("fromParamString", () => {
   expect(
-    parseFontSelectionSearchParam("Roboto:400,400italic;Roboto Mono:400,500"),
+    FontSelector.fromParamString("Roboto:400,400italic;Roboto Mono:400,500")
+      .selections,
   ).toEqual({
     "Roboto": ["400", "400italic"],
     "Roboto Mono": ["400", "500"],
   })
 })
 
-test("encodeFontSelectionSearchParam", () => {
+test("toParamString", () => {
   expect(
-    encodeFontSelectionSearchParam({
+    new FontSelector({
       "Roboto": ["400", "400italic"],
       "Roboto Mono": ["400"],
       "Open Sans": [],
-    }),
+    }).toParamString(),
   ).toEqual("Roboto:400,400italic;Roboto Mono:400")
 })
