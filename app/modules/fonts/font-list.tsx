@@ -1,5 +1,10 @@
-import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/solid"
+import {
+  CheckCircleIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+} from "@heroicons/react/solid"
 import { useSearchParams, useTransition } from "@remix-run/react"
+import clsx from "clsx"
 import { Virtuoso } from "react-virtuoso"
 import { FontSelector } from "~/modules/font-selection"
 import { Font } from "~/modules/fonts/api.server"
@@ -48,9 +53,12 @@ function FontItemHeader({
   visible,
   toggle,
 }: { font: Font } & CollapseHeaderProps) {
+  const [params] = useSearchParams()
+  const selector = FontSelector.fromParamString(params.get("fonts") ?? "")
   return (
     <button
-      className="text-left flex w-full items-center py-2 hover:bg-base-200 rounded-md transition text-lg"
+      type="button"
+      className="flex w-full items-center py-2 hover:bg-base-200 rounded-md transition text-lg"
       onClick={toggle}
     >
       {visible ? (
@@ -59,6 +67,12 @@ function FontItemHeader({
         <ChevronRightIcon className="w-6" />
       )}
       <span>{font.family}</span>
+      <CheckCircleIcon
+        className={clsx(
+          "text-primary/50 w-6 ml-auto transition-opacity",
+          selector.isFamilySelected(font.family) ? "opacity-100" : "opacity-0",
+        )}
+      />
     </button>
   )
 }
@@ -82,8 +96,8 @@ function FontItemVariant({
 
   // checking the transition selections for optimistic UI
   const isChecked =
-    pendingSelector?.isSelected(family, variant) ??
-    selector.isSelected(family, variant)
+    pendingSelector?.isVariantSelected(family, variant) ??
+    selector.isVariantSelected(family, variant)
 
   return (
     <label
