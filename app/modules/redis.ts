@@ -6,20 +6,24 @@ import type {
 } from "redis"
 import { createClient } from "redis"
 
-let client:
-  | RedisClientType<RedisModules, RedisFunctions, RedisScripts>
-  | undefined
+declare global {
+  module globalThis {
+    var __redisClient:
+      | RedisClientType<RedisModules, RedisFunctions, RedisScripts>
+      | undefined
+  }
+}
 
 async function getClient() {
-  if (client) {
-    return client
+  if (globalThis.__redisClient) {
+    return globalThis.__redisClient
   }
 
   try {
     const newClient = createClient({ url: process.env.REDIS_URL })
     await newClient.connect()
     console.info("Connected to Redis")
-    return (client = newClient)
+    return (globalThis.__redisClient = newClient)
   } catch (error) {
     console.warn("Failed to connect to redis.", error)
     return undefined
