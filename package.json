@@ -21,6 +21,7 @@
     "daisyui": "^2.17.0",
     "dotenv": "^16.0.1",
     "endent": "^2.1.0",
+    "fast-stable-json-stringify": "^1.0.0",
     "isbot": "^3.5.0",
     "match-sorter": "^6.3.1",
     "react": "^18.2.0",
@@ -28,6 +29,7 @@
     "react-virtuoso": "^2.16.1",
     "redis": "^4.1.0",
     "remix-typed": "^0.3.0",
+    "type-fest": "^2.15.1",
     "zod": "^3.17.3"
   },
   "devDependencies": {

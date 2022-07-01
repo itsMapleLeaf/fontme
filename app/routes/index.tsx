@@ -3,11 +3,11 @@ import { jsonTyped, useLoaderDataTyped } from "remix-typed"
 import { FontSelector } from "~/modules/fonts/font-selector"
 import { generateFontCss } from "~/modules/fonts/generate-font-css"
 
-export function loader({ request }: DataFunctionArgs) {
+export async function loader({ request }: DataFunctionArgs) {
   const { searchParams } = new URL(request.url)
   const selector = FontSelector.fromParamString(searchParams.get("fonts") ?? "")
   return jsonTyped({
-    css: generateFontCss(selector),
+    css: await generateFontCss(selector),
   })
 }
 
