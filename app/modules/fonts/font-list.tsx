@@ -70,8 +70,7 @@ function FontItemHeader({
 }: { font: Font } & CollapseHeaderProps) {
   const [params] = useSearchParams()
   const selector = FontSelector.fromParamString(params.get("fonts") ?? "")
-
-  const loaded = useFontLink(font.family, { weight: "400", style: "normal" })
+  const loaded = useFontLoader(font.family, { weight: "400", style: "normal" })
 
   return (
     <button
@@ -125,7 +124,7 @@ function FontItemVariant({
     pendingSelector?.isVariantSelected(family, variant.name) ??
     selector.isVariantSelected(family, variant.name)
 
-  const loaded = useFontLink(family, variant)
+  const loaded = useFontLoader(family, variant)
 
   return (
     <label className="flex gap-2 items-center cursor-pointer hover:bg-base-200 focus:bg-base-200 rounded-md p-2 leading-none transition select-none">
@@ -156,7 +155,7 @@ function FontItemVariant({
           fontStyle: variant.style,
         }}
         className={clsx(
-          "transition ease-out",
+          "transition duration-200 ease-out",
           loaded ? "opacity-100" : "opacity-0 translate-x-2",
         )}
       >
@@ -167,7 +166,7 @@ function FontItemVariant({
   )
 }
 
-function useFontLink(
+function useFontLoader(
   family: string,
   { weight, style }: { weight: string; style: string },
 ) {
@@ -186,11 +185,28 @@ function useFontLink(
     link.href = `https://fonts.googleapis.com/css2?${params}`
     link.rel = "stylesheet"
 
-    link.addEventListener("load", () => setLoaded(true))
     link.addEventListener("error", () => setLoaded(true))
+
+    let cancelled = false
+
+    // when the stylesheet loads, the font itself may not have actually loaded yet,
+    // so we have to wait until it does
+    link.addEventListener("load", async () => {
+      let loaded = false
+      while (!loaded && !cancelled) {
+        const result = await document.fonts.load(
+          `${weight} ${style} 16px "${family}"`,
+        )
+        loaded = result.length > 0
+      }
+      setLoaded(true)
+    })
+
     document.head.append(link)
+
     return () => {
       link.remove()
+      cancelled = true
     }
   }, [family, weight, style])
 
