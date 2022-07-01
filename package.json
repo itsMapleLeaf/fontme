@@ -8,7 +8,7 @@
     "dev:tailwind": "pnpm run tailwind --watch",
     "dev:docker": "docker-compose up",
     "build": "pnpm run tailwind --minify && remix build",
-    "start": "remix-serve build",
+    "start": "echo \"Running Node $(node -v)\" && remix-serve build",
     "test": "vitest",
     "tailwind": "tailwindcss -o app/tailwind.css"
   },
