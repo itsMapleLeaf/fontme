@@ -86,7 +86,7 @@ export default function App() {
             </Deferred>
           </div>
         </nav>
-        <main className="flex-1 min-w-0 p-4 overflow-y-auto">
+        <main className="flex-1 min-w-0 overflow-y-auto">
           <Outlet />
         </main>
       </div>
