@@ -88,7 +88,7 @@ function FontItemHeader({
       />
       <CheckCircleIcon
         className={clsx(
-          "text-primary/50 w-6 ml-auto transition-opacity",
+          "text-info/50 w-6 ml-auto transition-opacity",
           selector.isFamilySelected(font.family) ? "opacity-100" : "opacity-0",
         )}
       />
