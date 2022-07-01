@@ -36,10 +36,20 @@ export async function loadFonts(): Promise<Font[]> {
   const apiUrl = new URL("https://www.googleapis.com/webfonts/v1/webfonts")
   apiUrl.searchParams.set("key", apiKey)
   apiUrl.searchParams.set("sort", "popularity")
-  return (
+
+  const fonts =
     (await loadFontsFromCache(apiUrl.href)) ||
     (await loadFontsFromApi(apiUrl.href))
-  )
+
+  const styleRank = (style: string) =>
+    style === "number" ? 0 : style === "italic" ? 1 : 2
+
+  return fonts.map((font) => ({
+    ...font,
+    variants: font.variants
+      .sort((a, b) => a.weight.localeCompare(b.weight))
+      .sort((a, b) => styleRank(b.style) - styleRank(a.style)),
+  }))
 }
 
 async function loadFontsFromCache(key: string): Promise<Font[] | undefined> {
