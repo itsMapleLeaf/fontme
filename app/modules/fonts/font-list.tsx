@@ -6,11 +6,11 @@ import {
 import { useSearchParams, useTransition } from "@remix-run/react"
 import clsx from "clsx"
 import { matchSorter } from "match-sorter"
-import { useEffect, useState } from "react"
 import { Virtuoso } from "react-virtuoso"
 import { FontSelector } from "~/modules/font-selection"
 import { Font, FontVariant } from "~/modules/fonts/api.server"
 import { Collapse, CollapseHeaderProps } from "~/modules/ui/collapse"
+import { useFontLoader } from "./font-loader"
 
 export function FontList({
   fonts,
@@ -70,7 +70,6 @@ function FontItemHeader({
 }: { font: Font } & CollapseHeaderProps) {
   const [params] = useSearchParams()
   const selector = FontSelector.fromParamString(params.get("fonts") ?? "")
-  const loaded = useFontLoader(font.family, { weight: "400", style: "normal" })
 
   return (
     <button
@@ -83,15 +82,10 @@ function FontItemHeader({
       ) : (
         <ChevronRightIcon className="w-6" />
       )}
-      <span
-        style={{ fontFamily: font.family }}
-        className={clsx(
-          "transition ease-out",
-          loaded ? "opacity-100" : "opacity-0 translate-x-2",
-        )}
-      >
-        {font.family}
-      </span>
+      <FontPreviewText
+        family={font.family}
+        variant={{ weight: "400", style: "normal" }}
+      />
       <CheckCircleIcon
         className={clsx(
           "text-primary/50 w-6 ml-auto transition-opacity",
@@ -124,8 +118,6 @@ function FontItemVariant({
     pendingSelector?.isVariantSelected(family, variant.name) ??
     selector.isVariantSelected(family, variant.name)
 
-  const loaded = useFontLoader(family, variant)
-
   return (
     <label className="flex gap-2 items-center cursor-pointer hover:bg-base-200 focus:bg-base-200 rounded-md p-2 leading-none transition select-none">
       <input
@@ -148,67 +140,33 @@ function FontItemVariant({
           setParams(newParams)
         }}
       />
-      <span
-        style={{
-          fontFamily: family,
-          fontWeight: variant.weight,
-          fontStyle: variant.style,
-        }}
-        className={clsx(
-          "transition duration-200 ease-out",
-          loaded ? "opacity-100" : "opacity-0 translate-x-2",
-        )}
-      >
-        {family}
-      </span>
+      <FontPreviewText family={family} variant={variant} />
       <span className="ml-auto text-sm opacity-50 italic">{variant.name}</span>
     </label>
   )
 }
 
-function useFontLoader(
-  family: string,
-  { weight, style }: { weight: string; style: string },
-) {
-  const [loaded, setLoaded] = useState(false)
-
-  useEffect(() => {
-    const variantParam =
-      style === "italic" ? `ital,wght@1,${weight}` : `wght@${weight}`
-
-    const params = new URLSearchParams()
-    params.set("family", `${family}:${variantParam}`)
-    params.set("display", "block")
-    params.set("text", family)
-
-    const link = document.createElement("link")
-    link.href = `https://fonts.googleapis.com/css2?${params}`
-    link.rel = "stylesheet"
-
-    link.addEventListener("error", () => setLoaded(true))
-
-    let cancelled = false
-
-    // when the stylesheet loads, the font itself may not have actually loaded yet,
-    // so we have to wait until it does
-    link.addEventListener("load", async () => {
-      let loaded = false
-      while (!loaded && !cancelled) {
-        const result = await document.fonts.load(
-          `${weight} ${style} 16px "${family}"`,
-        )
-        loaded = result.length > 0
-      }
-      setLoaded(true)
-    })
-
-    document.head.append(link)
-
-    return () => {
-      link.remove()
-      cancelled = true
-    }
-  }, [family, weight, style])
-
-  return loaded
+function FontPreviewText({
+  family,
+  variant,
+}: {
+  family: string
+  variant: { weight: string; style: string }
+}) {
+  const loadStatus = useFontLoader(family, variant)
+  return (
+    <span
+      style={{
+        fontFamily: family,
+        fontWeight: variant.weight,
+        fontStyle: variant.style,
+      }}
+      className={clsx(
+        "transition duration-200 ease-out",
+        loadStatus === "loaded" ? "opacity-100" : "opacity-0 translate-x-2",
+      )}
+    >
+      {family}
+    </span>
+  )
 }
