@@ -1,5 +1,5 @@
 import { expect, test } from "vitest"
-import { FontSelector } from "./font-selection"
+import { FontSelector } from "./font-selector"
 
 test("fromParamString", () => {
   expect(

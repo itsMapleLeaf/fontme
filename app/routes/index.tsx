@@ -1,8 +1,8 @@
 import { DataFunctionArgs, Deferrable, deferred } from "@remix-run/node"
 import { Deferred, useLoaderData, useSearchParams } from "@remix-run/react"
-import { FontSelector } from "~/modules/font-selection"
 import { Font, loadFonts } from "~/modules/fonts/api.server"
 import { FontList, FontListFallback } from "~/modules/fonts/font-list"
+import { FontSelector } from "~/modules/fonts/font-selector"
 import { SearchForm } from "~/modules/ui/search-form"
 
 const searchParamName = "search"
