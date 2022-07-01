@@ -7,7 +7,11 @@ import { useSearchParams, useTransition } from "@remix-run/react"
 import clsx from "clsx"
 import { matchSorter } from "match-sorter"
 import { Virtuoso } from "react-virtuoso"
-import { Font, FontVariant } from "~/modules/fonts/api.server"
+import {
+  FontDict,
+  FontVariant,
+  FontVariantRecord,
+} from "~/modules/fonts/api.server"
 import { FontSelector } from "~/modules/fonts/font-selector"
 import { Collapse, CollapseHeaderProps } from "~/modules/ui/collapse"
 import { useFontLoader } from "./font-loader"
@@ -16,24 +20,29 @@ export function FontList({
   fonts,
   searchQuery,
 }: {
-  fonts: Font[]
+  fonts: FontDict
   searchQuery: string
 }) {
-  if (searchQuery) {
-    fonts = matchSorter(fonts, searchQuery, { keys: ["family"] })
-  }
+  const familyNames = searchQuery
+    ? matchSorter(fonts.familyNames, searchQuery)
+    : fonts.familyNames
+
   return (
     <Virtuoso
       className="w-full h-full"
       style={{ transform: "translateZ(0)" }}
       initialItemCount={30}
-      totalCount={fonts.length}
+      totalCount={familyNames.length}
       overscan={500}
       cellSpacing={12}
       itemContent={(index) => {
-        const font = fonts[index]
+        const familyName = familyNames[index]
+        const font = familyName && fonts.families[familyName]
+        if (!font) return null
         return (
-          <div className="mb-1 px-3">{font && <FontItem font={font} />}</div>
+          <div className="mb-1 px-3">
+            <FontItem family={familyName} variants={font.variants} />
+          </div>
         )
       }}
     />
@@ -44,30 +53,43 @@ export function FontListFallback() {
   return <p className="p-3 text-center opacity-50">Loading...</p>
 }
 
-function FontItem({ font }: { font: Font }) {
+function FontItem({
+  family,
+  variants,
+}: {
+  family: string
+  variants: FontVariantRecord
+}) {
+  const styleRank = (style: string) =>
+    style === "number" ? 0 : style === "italic" ? 1 : 2
+
   return (
     <Collapse
-      stateKey={`font-item:${font.family}`}
-      header={(props) => <FontItemHeader {...props} font={font} />}
+      stateKey={`font-item:${family}`}
+      header={(props) => <FontItemHeader {...props} family={family} />}
     >
       <div className="px-3 space-y-1 mt-1">
-        {font.variants.map((variant) => (
-          <FontItemVariant
-            key={variant.name}
-            family={font.family}
-            variant={variant}
-          />
-        ))}
+        {Object.entries(variants)
+          .sort((a, b) => a[1].weight.localeCompare(b[1].weight))
+          .sort((a, b) => styleRank(b[1].style) - styleRank(a[1].style))
+          .map(([name, variant]) => (
+            <FontItemVariant
+              key={name}
+              family={family}
+              variant={variant}
+              variantName={name}
+            />
+          ))}
       </div>
     </Collapse>
   )
 }
 
 function FontItemHeader({
-  font,
+  family,
   visible,
   toggle,
-}: { font: Font } & CollapseHeaderProps) {
+}: { family: string } & CollapseHeaderProps) {
   const [params] = useSearchParams()
   const selector = FontSelector.fromParamString(params.get("fonts") ?? "")
 
@@ -83,13 +105,13 @@ function FontItemHeader({
         <ChevronRightIcon className="w-6" />
       )}
       <FontPreviewText
-        family={font.family}
+        family={family}
         variant={{ weight: "400", style: "normal" }}
       />
       <CheckCircleIcon
         className={clsx(
           "text-info/50 w-6 ml-auto transition-opacity",
-          selector.isFamilySelected(font.family) ? "opacity-100" : "opacity-0",
+          selector.isFamilySelected(family) ? "opacity-100" : "opacity-0",
         )}
       />
     </button>
@@ -98,9 +120,11 @@ function FontItemHeader({
 
 function FontItemVariant({
   family,
+  variantName,
   variant,
 }: {
   family: string
+  variantName: string
   variant: FontVariant
 }) {
   const [params, setParams] = useSearchParams()
@@ -115,8 +139,8 @@ function FontItemVariant({
 
   // checking the transition selections for optimistic UI
   const isChecked =
-    pendingSelector?.isVariantSelected(family, variant.name) ??
-    selector.isVariantSelected(family, variant.name)
+    pendingSelector?.isVariantSelected(family, variantName) ??
+    selector.isVariantSelected(family, variantName)
 
   return (
     <label className="flex gap-2 items-center cursor-pointer hover:bg-base-200 focus:bg-base-200 rounded-md p-2 leading-none transition select-none">
@@ -126,8 +150,8 @@ function FontItemVariant({
         checked={isChecked}
         onChange={(event) => {
           const newSelector = event.target.checked
-            ? selector.select(family, variant.name)
-            : selector.deselect(family, variant.name)
+            ? selector.select(family, variantName)
+            : selector.deselect(family, variantName)
 
           const fontsParam = newSelector.toParamString()
 

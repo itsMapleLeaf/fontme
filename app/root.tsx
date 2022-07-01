@@ -18,7 +18,7 @@ import {
   useSearchParams,
 } from "@remix-run/react"
 import type { CatchBoundaryComponent } from "@remix-run/react/routeModules"
-import { Font, loadFonts } from "~/modules/fonts/api.server"
+import { FontDict, loadFonts } from "~/modules/fonts/api.server"
 import { FontList, FontListFallback } from "~/modules/fonts/font-list"
 import { SearchForm } from "~/modules/ui/search-form"
 import tailwind from "./tailwind.css"
@@ -26,7 +26,7 @@ import tailwind from "./tailwind.css"
 const searchParamName = "search"
 
 type LoaderData = {
-  fonts: Deferrable<Font[]>
+  fonts: Deferrable<FontDict>
 }
 
 export const loader: LoaderFunction = () =>
@@ -72,7 +72,7 @@ export default function App() {
   return (
     <Document>
       <div className="fixed inset-0 flex">
-        <nav className="bg-base-100 overflow-y-auto shadow-md flex flex-col content-start w-80">
+        <nav className="bg-base-100 overflow-y-auto shadow-md flex flex-col w-80">
           <div className="p-4">
             <SearchForm paramName={searchParamName} />
           </div>

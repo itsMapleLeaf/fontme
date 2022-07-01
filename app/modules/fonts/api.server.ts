@@ -19,50 +19,36 @@ const apiResponseSchema = z
   .passthrough()
 
 const fontVariantSchema = z.object({
-  name: z.string(),
   weight: z.string(),
   style: z.string(),
   url: z.string(),
 })
 export type FontVariant = z.infer<typeof fontVariantSchema>
 
-const fontSchema = z.object({
-  family: z.string(),
-  variants: z.array(fontVariantSchema),
-})
-export type Font = z.infer<typeof fontSchema>
+const fontVariantRecordSchema = z.record(fontVariantSchema)
+export type FontVariantRecord = z.infer<typeof fontVariantRecordSchema>
 
-export async function loadFonts(): Promise<Font[]> {
+const fontDictSchema = z.object({
+  /** ordered list of font families */
+  familyNames: z.array(z.string()),
+
+  /** dictionary of each family for easy reference */
+  families: z.record(z.object({ variants: fontVariantRecordSchema })),
+})
+export type FontDict = z.infer<typeof fontDictSchema>
+
+export async function loadFonts(): Promise<FontDict> {
   const apiUrl = new URL("https://www.googleapis.com/webfonts/v1/webfonts")
   apiUrl.searchParams.set("key", apiKey)
   apiUrl.searchParams.set("sort", "popularity")
 
-  const fonts =
+  return (
     (await loadFontsFromCache(apiUrl.href)) ||
     (await loadFontsFromApi(apiUrl.href))
-
-  const styleRank = (style: string) =>
-    style === "number" ? 0 : style === "italic" ? 1 : 2
-
-  return fonts.map((font) => ({
-    ...font,
-    variants: font.variants
-      .sort((a, b) => a.weight.localeCompare(b.weight))
-      .sort((a, b) => styleRank(b.style) - styleRank(a.style)),
-  }))
+  )
 }
 
-async function loadFontsFromCache(key: string): Promise<Font[] | undefined> {
-  try {
-    const result = await cacheGet(key)
-    return z.array(fontSchema).parse(result && JSON.parse(result))
-  } catch (error) {
-    console.warn("Error loading fonts from cache:", error)
-    return undefined
-  }
-}
-
-async function loadFontsFromApi(url: string): Promise<Font[]> {
+async function loadFontsFromApi(url: string): Promise<FontDict> {
   const response = await fetch(url)
   if (response.status !== 200) {
     const errorData = await response
@@ -83,30 +69,50 @@ async function loadFontsFromApi(url: string): Promise<Font[]> {
 
   const data = apiResponseSchema.parse(await response.json())
 
-  const fonts = data.items.map((item) => ({
-    family: item.family,
-    variants: Object.entries(item.files).flatMap(
-      ([name, url]) => parseVariant(name, url) ?? [],
+  const fonts: FontDict = {
+    familyNames: data.items.map((item) => item.family),
+    families: Object.fromEntries(
+      data.items.map((item) => [
+        item.family,
+        {
+          variants: Object.fromEntries(
+            Object.entries(item.files).flatMap(([name, url]) => {
+              const variant = parseVariant(name, url)
+              return [variant ? [name, variant] : []]
+            }),
+          ),
+        },
+      ]),
     ),
-  }))
+  }
 
   await cacheSet(url, JSON.stringify(fonts))
 
   return fonts
 }
 
+async function loadFontsFromCache(key: string): Promise<FontDict | undefined> {
+  try {
+    const result = await cacheGet(key)
+    return fontDictSchema.parse(result && JSON.parse(result))
+  } catch (error) {
+    console.warn("Error loading fonts from cache:", error)
+    return undefined
+  }
+}
+
 function parseVariant(name: string, url: string): FontVariant | undefined {
   if (name === "regular") {
-    return { name, url, weight: "400", style: "normal" }
+    return { url, weight: "400", style: "normal" }
   }
   if (name === "italic") {
-    return { name, url, weight: "400", style: "italic" }
+    return { url, weight: "400", style: "italic" }
   }
   if (name.includes("italic")) {
-    return { name, url, weight: name.replace("italic", ""), style: "italic" }
+    return { url, weight: name.replace("italic", ""), style: "italic" }
   }
   if (name.match(/^\d{3}$/)) {
-    return { name, url, weight: name, style: "normal" }
+    return { url, weight: name, style: "normal" }
   }
   console.warn("Failed to parse variant:", name, url)
 }
