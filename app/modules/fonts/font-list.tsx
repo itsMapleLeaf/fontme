@@ -50,7 +50,7 @@ function FontItem({ font }: { font: Font }) {
       stateKey={`font-item:${font.family}`}
       header={(props) => <FontItemHeader {...props} font={font} />}
     >
-      <div className="px-3 space-y-1 mt-2">
+      <div className="px-3 space-y-1 mt-1">
         {font.variants.map((variant) => (
           <FontItemVariant
             key={variant.name}
@@ -140,8 +140,12 @@ function FontItemVariant({
           setParams(newParams)
         }}
       />
-      <FontPreviewText family={family} variant={variant} />
-      <span className="ml-auto text-sm opacity-50 italic">{variant.name}</span>
+      <div className="flex flex-col gap-1">
+        <FontPreviewText family={family} variant={variant} />
+        <span className="text-sm opacity-50">
+          {variant.style} {variant.weight}
+        </span>
+      </div>
     </label>
   )
 }
