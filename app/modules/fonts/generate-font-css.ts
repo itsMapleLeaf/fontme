@@ -23,6 +23,9 @@ export async function generateFontCss(selector: FontSelector) {
       return css`
         @font-face {
           font-family: ${JSON.stringify(family)};
+          font-style: ${variant.style};
+          font-weight: ${variant.weight};
+          src: url(${variant.url}) format("woff2");
         }
       `
     })
