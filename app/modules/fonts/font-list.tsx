@@ -9,7 +9,7 @@ import { matchSorter } from "match-sorter"
 import { useEffect, useState } from "react"
 import { Virtuoso } from "react-virtuoso"
 import { FontSelector } from "~/modules/font-selection"
-import { Font } from "~/modules/fonts/api.server"
+import { Font, FontVariant } from "~/modules/fonts/api.server"
 import { Collapse, CollapseHeaderProps } from "~/modules/ui/collapse"
 
 export function FontList({
@@ -53,7 +53,7 @@ function FontItem({ font }: { font: Font }) {
       <div className="px-3 space-y-1 mt-2">
         {font.variants.map((variant) => (
           <FontItemVariant
-            key={variant}
+            key={variant.name}
             family={font.family}
             variant={variant}
           />
@@ -71,7 +71,7 @@ function FontItemHeader({
   const [params] = useSearchParams()
   const selector = FontSelector.fromParamString(params.get("fonts") ?? "")
 
-  const loaded = useFontLink(font.family, "regular")
+  const loaded = useFontLink(font.family, { weight: "400", style: "normal" })
 
   return (
     <button
@@ -108,7 +108,7 @@ function FontItemVariant({
   variant,
 }: {
   family: string
-  variant: string
+  variant: FontVariant
 }) {
   const [params, setParams] = useSearchParams()
   const selector = FontSelector.fromParamString(params.get("fonts") ?? "")
@@ -122,24 +122,21 @@ function FontItemVariant({
 
   // checking the transition selections for optimistic UI
   const isChecked =
-    pendingSelector?.isVariantSelected(family, variant) ??
-    selector.isVariantSelected(family, variant)
+    pendingSelector?.isVariantSelected(family, variant.name) ??
+    selector.isVariantSelected(family, variant.name)
 
   const loaded = useFontLink(family, variant)
 
   return (
-    <label
-      key={variant}
-      className="flex gap-2 items-center cursor-pointer hover:bg-base-200 focus:bg-base-200 rounded-md p-2 leading-none transition select-none"
-    >
+    <label className="flex gap-2 items-center cursor-pointer hover:bg-base-200 focus:bg-base-200 rounded-md p-2 leading-none transition select-none">
       <input
         type="checkbox"
         className="checkbox"
         checked={isChecked}
         onChange={(event) => {
           const newSelector = event.target.checked
-            ? selector.select(family, variant)
-            : selector.deselect(family, variant)
+            ? selector.select(family, variant.name)
+            : selector.deselect(family, variant.name)
 
           const fontsParam = newSelector.toParamString()
 
@@ -155,8 +152,8 @@ function FontItemVariant({
       <span
         style={{
           fontFamily: family,
-          fontWeight: variant === "regular" ? 400 : variant.slice(0, 3),
-          fontStyle: variant.endsWith("italic") ? "italic" : "normal",
+          fontWeight: variant.weight,
+          fontStyle: variant.style,
         }}
         className={clsx(
           "transition ease-out",
@@ -165,25 +162,23 @@ function FontItemVariant({
       >
         {family}
       </span>
-      <span className="ml-auto text-sm opacity-50 italic">{variant}</span>
+      <span className="ml-auto text-sm opacity-50 italic">{variant.name}</span>
     </label>
   )
 }
 
-function useFontLink(family: string, variant: string) {
+function useFontLink(
+  family: string,
+  { weight, style }: { weight: string; style: string },
+) {
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    const getVariantParam = () => {
-      if (variant === "regular") return `wght@400`
-      if (variant === "italic") return `ital,wght@1,400`
-      if (variant.endsWith("italic"))
-        return `ital,wght@1,${variant.replace("italic", "")}`
-      return `wght@${variant}`
-    }
+    const variantParam =
+      style === "italic" ? `ital,wght@1,${weight}` : `wght@${weight}`
 
     const params = new URLSearchParams()
-    params.set("family", `${family}:${getVariantParam()}`)
+    params.set("family", `${family}:${variantParam}`)
     params.set("display", "block")
     params.set("text", family)
 
@@ -197,7 +192,7 @@ function useFontLink(family: string, variant: string) {
     return () => {
       link.remove()
     }
-  }, [family, variant])
+  }, [family, weight, style])
 
   return loaded
 }
