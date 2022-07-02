@@ -4,7 +4,7 @@ import {
   DocumentDownloadIcon,
 } from "@heroicons/react/solid"
 import { DataFunctionArgs, LinksFunction } from "@remix-run/node"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { jsonTyped, useLoaderDataTyped } from "remix-typed"
 import { FontSelector } from "~/modules/fonts/font-selector"
 import { generateFontCss } from "~/modules/fonts/generate-font-css.server"
@@ -48,11 +48,13 @@ export default function Index() {
 
 function CopyCssButton({ code }: { code: string }) {
   const [copied, setCopied] = useState(false)
+  const timeoutRef = useRef<NodeJS.Timeout>()
 
   const handleClick = () => {
     navigator.clipboard.writeText(code)
     setCopied(true)
-    setTimeout(() => setCopied(false), 1000)
+    clearTimeout(timeoutRef.current)
+    timeoutRef.current = setTimeout(() => setCopied(false), 1000)
   }
 
   return (
