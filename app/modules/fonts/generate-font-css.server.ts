@@ -34,5 +34,5 @@ export async function generateFontCss(selector: FontSelector) {
     .join("\n\n")
 
   css = format(css, { parser: "css" })
-  return { __html: hljs.highlight(css, { language: "css" }).value }
+  return { code: css, __html: hljs.highlight(css, { language: "css" }).value }
 }
