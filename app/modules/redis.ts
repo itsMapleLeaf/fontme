@@ -1,33 +1,32 @@
-import type {
-  RedisClientType,
-  RedisFunctions,
-  RedisModules,
-  RedisScripts,
-} from "redis"
+import type { RedisClientType } from "redis"
 import { createClient } from "redis"
+
+type RedisClient = RedisClientType
 
 declare global {
   module globalThis {
-    var __redisClient:
-      | RedisClientType<RedisModules, RedisFunctions, RedisScripts>
-      | undefined
+    var __redisClientPromise: Promise<RedisClient | undefined> | undefined
   }
 }
 
-async function getClient() {
-  if (globalThis.__redisClient) {
-    return globalThis.__redisClient
+function getClient(): Promise<RedisClient | undefined> {
+  if (globalThis.__redisClientPromise) {
+    return globalThis.__redisClientPromise
   }
 
-  try {
-    const newClient = createClient({ url: process.env.REDIS_URL })
-    await newClient.connect()
-    console.info("Connected to Redis")
-    return (globalThis.__redisClient = newClient)
-  } catch (error) {
-    console.warn("Failed to connect to redis.", error)
+  const promise = createConnectedClient().catch((error) => {
+    console.warn("Failed to connect to redis:", error)
+    globalThis.__redisClientPromise = undefined
     return undefined
-  }
+  })
+  return (globalThis.__redisClientPromise = promise)
+}
+
+async function createConnectedClient(): Promise<RedisClient> {
+  const newClient: RedisClient = createClient({ url: process.env.REDIS_URL })
+  await newClient.connect()
+  console.info("Connected to Redis")
+  return newClient
 }
 
 export async function cacheGet(key: string): Promise<string | undefined> {
