@@ -34,7 +34,7 @@ export default function Index() {
         <div className="bg-base-200 flex">
           <button
             type="button"
-            className="btn btn-ghost rounded-none"
+            className="btn btn-ghost rounded-none gap-1"
             onClick={() => alert("this doesn't work yet lol")}
           >
             <DocumentDownloadIcon className="w-6" /> Download fonts
