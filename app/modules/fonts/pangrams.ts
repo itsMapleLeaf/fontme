@@ -1,0 +1,25 @@
+import { shuffle } from "../common/shuffle"
+
+export const pangrams = shuffle([
+  "Quick fox jumps nightly above wizard.",
+  "The five boxing wizards jump quickly.",
+  "Jackdaws love my big sphinx of quartz.",
+  "Five quacking zephyrs jolt my wax bed.",
+  "Two driven jocks help fax my big quiz.",
+  "Fickle jinx bog dwarves spy math quiz.",
+  "Public junk dwarves hug my quartz fox.",
+  "Pack my box with five dozen liquor jugs.",
+  "When zombies arrive, quickly fax judge Pat.",
+  "The quick brown fox jumps over the lazy dog.",
+  "Woven silk pyjamas exchanged for blue quartz.",
+  "The quick onyx goblin jumps over the lazy dwarf.",
+  "Foxy diva Jennifer Lopez wasn't baking my quiche.",
+  "My girl wove six dozen plaid jackets before she quit.",
+  "Grumpy wizards make a toxic brew for the jovial queen.",
+  "A quivering Texas zombie fought republic linked jewelry.",
+  "The wizard quickly jinxed the gnomes before they vaporized.",
+  "All questions asked by five watched experts amaze the judge.",
+  "We promptly judged antique ivory buckles for the next prize.",
+  "Jim quickly realized that the beautiful gowns are expensive.",
+  "Back in June, we delivered oxygen equipment of the same size.",
+])

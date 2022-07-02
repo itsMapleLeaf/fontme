@@ -6,12 +6,13 @@ const loaders = new Map<string, FontLoader>()
 export function useFontLoader(
   family: string,
   { weight, style }: { weight: string; style: string },
+  text: string,
 ) {
   const loader = (() => {
-    const key = `${family}-${weight}-${style}`
+    const key = `${family}-${weight}-${style}-${text}`
     let loader = loaders.get(key)
     if (!loader) {
-      loader = new FontLoader(family, { weight, style })
+      loader = new FontLoader(family, { weight, style }, text)
       loaders.set(key, loader)
     }
     return loader
@@ -28,6 +29,7 @@ class FontLoader {
   constructor(
     readonly family: string,
     readonly variant: { weight: string; style: string },
+    readonly text: string,
   ) {}
 
   load() {
@@ -41,8 +43,8 @@ class FontLoader {
 
     const params = new URLSearchParams()
     params.set("family", `${this.family}:${variantParam}`)
-    params.set("display", "block")
-    params.set("text", this.family)
+    params.set("display", "swap")
+    params.set("text", this.text)
 
     const link = document.createElement("link")
     link.href = `https://fonts.googleapis.com/css2?${params}`
@@ -67,9 +69,5 @@ class FontLoader {
     })
 
     document.head.append(link)
-  }
-
-  get key(): string {
-    return `${this.family}-${this.variant.weight}-${this.variant.style}`
   }
 }

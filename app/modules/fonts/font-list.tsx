@@ -1,8 +1,4 @@
-import {
-  CheckCircleIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-} from "@heroicons/react/solid"
+import { CheckCircleIcon, ChevronRightIcon } from "@heroicons/react/solid"
 import { useSearchParams, useTransition } from "@remix-run/react"
 import clsx from "clsx"
 import { matchSorter } from "match-sorter"
@@ -13,8 +9,9 @@ import {
   FontVariantRecord,
 } from "~/modules/fonts/api.server"
 import { FontSelector } from "~/modules/fonts/font-selector"
-import { Collapse, CollapseHeaderProps } from "~/modules/ui/collapse"
+import { Collapse } from "~/modules/ui/collapse"
 import { useFontLoader } from "./font-loader"
+import { pangrams } from "./pangrams"
 
 export function FontList({
   fonts,
@@ -29,19 +26,21 @@ export function FontList({
 
   return (
     <Virtuoso
-      className="w-full h-full"
-      style={{ transform: "translateZ(0)" }}
+      useWindowScroll
       initialItemCount={30}
-      totalCount={familyNames.length}
-      overscan={500}
-      cellSpacing={12}
-      itemContent={(index) => {
-        const familyName = familyNames[index]
-        const font = familyName && fonts.families[familyName]
-        if (!font) return null
+      data={familyNames}
+      className="-my-2"
+      overscan={800}
+      itemContent={(index, familyName) => {
+        const font = fonts.families[familyName]
+        if (!font) return
         return (
-          <div className="mb-1 px-3">
-            <FontItem family={familyName} variants={font.variants} />
+          <div className="py-2">
+            <FontItem
+              family={familyName}
+              variants={font.variants}
+              previewText={pangrams[index % pangrams.length]!}
+            />
           </div>
         )
       }}
@@ -56,65 +55,79 @@ export function FontListFallback() {
 function FontItem({
   family,
   variants,
+  previewText,
 }: {
   family: string
   variants: FontVariantRecord
+  previewText: string
 }) {
-  const styleRank = (style: string) =>
-    style === "number" ? 0 : style === "italic" ? 1 : 2
-
-  return (
-    <Collapse
-      stateKey={`font-item:${family}`}
-      header={(props) => <FontItemHeader {...props} family={family} />}
-    >
-      <div className="px-3 space-y-1 mt-1">
-        {Object.entries(variants)
-          .sort((a, b) => a[1].weight.localeCompare(b[1].weight))
-          .sort((a, b) => styleRank(b[1].style) - styleRank(a[1].style))
-          .map(([name, variant]) => (
-            <FontItemVariant
-              key={name}
-              family={family}
-              variant={variant}
-              variantName={name}
-            />
-          ))}
-      </div>
-    </Collapse>
-  )
-}
-
-function FontItemHeader({
-  family,
-  visible,
-  toggle,
-}: { family: string } & CollapseHeaderProps) {
   const [params] = useSearchParams()
   const selector = FontSelector.fromParamString(params.get("fonts") ?? "")
 
+  const styleRank = (style: string) =>
+    style === "number" ? 0 : style === "italic" ? 1 : 2
+
+  // return (
+  //   <Collapse
+  //     stateKey={`font-item:${family}`}
+  //     header={(props) => <FontItemHeader {...props} family={family} />}
+  //   >
+  //     <div className="px-3 space-y-1 mt-1">
+  //       {Object.entries(variants)
+  //         .sort((a, b) => a[1].weight.localeCompare(b[1].weight))
+  //         .sort((a, b) => styleRank(b[1].style) - styleRank(a[1].style))
+  //         .map(([name, variant]) => (
+  //           <FontItemVariant
+  //             key={name}
+  //             family={family}
+  //             variant={variant}
+  //             variantName={name}
+  //           />
+  //         ))}
+  //     </div>
+  //   </Collapse>
+  // )
+
   return (
-    <button
-      type="button"
-      className="flex w-full items-center py-2 hover:bg-base-200 rounded-md transition text-lg"
-      onClick={toggle}
-    >
-      {visible ? (
-        <ChevronDownIcon className="w-6" />
-      ) : (
-        <ChevronRightIcon className="w-6" />
-      )}
-      <FontPreviewText
-        family={family}
-        variant={{ weight: "400", style: "normal" }}
-      />
-      <CheckCircleIcon
-        className={clsx(
-          "text-info/50 w-6 ml-auto transition-opacity",
-          selector.isFamilySelected(family) ? "opacity-100" : "opacity-0",
+    <div className="bg-base-100 shadow-md rounded-md overflow-clip">
+      <Collapse
+        stateKey={`font-item:${family}`}
+        header={(props) => (
+          <button
+            type="button"
+            onClick={props.toggle}
+            className="flex items-center gap-4 p-4 transition-colors text-left w-full hover:bg-white/5 focus:outline-none focus-visible:border-neutral-focus border-2 border-transparent "
+          >
+            <ChevronRightIcon
+              className={clsx("w-6 -m-2", props.visible ? "rotate-90" : "")}
+            />
+            <div className="flex-1">
+              <div className="text-sm opacity-70">{family}</div>
+              <div className="text-xl">
+                <FontPreviewText family={family} text={previewText} />
+              </div>
+            </div>
+            {selector.isFamilySelected(family) && (
+              <CheckCircleIcon className="w-6 text-success opacity-50" />
+            )}
+          </button>
         )}
-      />
-    </button>
+      >
+        <div className="bg-base-200 grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]">
+          {Object.entries(variants)
+            .sort((a, b) => a[1].weight.localeCompare(b[1].weight))
+            .sort((a, b) => styleRank(b[1].style) - styleRank(a[1].style))
+            .map(([name, variant]) => (
+              <FontItemVariant
+                key={name}
+                family={family}
+                variant={variant}
+                variantName={name}
+              />
+            ))}
+        </div>
+      </Collapse>
+    </div>
   )
 }
 
@@ -143,7 +156,7 @@ function FontItemVariant({
     selector.isVariantSelected(family, variantName)
 
   return (
-    <label className="flex gap-2 items-center cursor-pointer hover:bg-base-200 focus:bg-base-200 rounded-md p-2 leading-none transition select-none">
+    <label className="flex gap-3 items-center cursor-pointer hover:bg-white/5 focus:outline-none p-4 leading-none transition select-none">
       <input
         type="checkbox"
         className="checkbox"
@@ -165,10 +178,11 @@ function FontItemVariant({
         }}
       />
       <div className="flex flex-col gap-1">
-        <FontPreviewText family={family} variant={variant} />
-        <span className="text-sm opacity-50">
-          {variant.style} {variant.weight}
-        </span>
+        <FontPreviewText
+          family={family}
+          variant={variant}
+          text={`${variant.style} ${variant.weight}`}
+        />
       </div>
     </label>
   )
@@ -176,12 +190,14 @@ function FontItemVariant({
 
 function FontPreviewText({
   family,
-  variant,
+  variant = { weight: "400", style: "normal" },
+  text,
 }: {
   family: string
-  variant: { weight: string; style: string }
+  variant?: { weight: string; style: string }
+  text: string
 }) {
-  const loadStatus = useFontLoader(family, variant)
+  const loadStatus = useFontLoader(family, variant, text)
   return (
     <span
       style={{
@@ -191,10 +207,12 @@ function FontPreviewText({
       }}
       className={clsx(
         "transition duration-200 ease-out",
-        loadStatus === "loaded" ? "opacity-100" : "opacity-0 translate-x-2",
+        loadStatus === "loaded"
+          ? "opacity-100 translate-x-0"
+          : "opacity-0 translate-x-2",
       )}
     >
-      {family}
+      {text}
     </span>
   )
 }
