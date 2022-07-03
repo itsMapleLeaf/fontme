@@ -10,6 +10,7 @@ import {
 } from "~/modules/fonts/api.server"
 import { FontSelector } from "~/modules/fonts/font-selector"
 import { Collapse } from "~/modules/ui/collapse"
+import { compactParams } from "../dom/compact-params"
 import { useFontLoader } from "./font-loader"
 import { pangrams } from "./pangrams"
 
@@ -67,36 +68,15 @@ function FontItem({
   const styleRank = (style: string) =>
     style === "number" ? 0 : style === "italic" ? 1 : 2
 
-  // return (
-  //   <Collapse
-  //     stateKey={`font-item:${family}`}
-  //     header={(props) => <FontItemHeader {...props} family={family} />}
-  //   >
-  //     <div className="px-3 space-y-1 mt-1">
-  //       {Object.entries(variants)
-  //         .sort((a, b) => a[1].weight.localeCompare(b[1].weight))
-  //         .sort((a, b) => styleRank(b[1].style) - styleRank(a[1].style))
-  //         .map(([name, variant]) => (
-  //           <FontItemVariant
-  //             key={name}
-  //             family={family}
-  //             variant={variant}
-  //             variantName={name}
-  //           />
-  //         ))}
-  //     </div>
-  //   </Collapse>
-  // )
-
   return (
-    <div className="bg-base-100 shadow-md rounded-md overflow-clip">
+    <div className="rounded-md shadow-md bg-base-100 overflow-clip">
       <Collapse
         stateKey={`font-item:${family}`}
         header={(props) => (
           <button
             type="button"
             onClick={props.toggle}
-            className="flex items-center gap-4 p-4 transition-colors text-left w-full hover:bg-white/5 focus:outline-none focus-visible:border-neutral-focus border-2 border-transparent "
+            className="flex items-center w-full gap-4 p-4 text-left transition-colors border-2 border-transparent hover:bg-white/5 focus:outline-none focus-visible:border-neutral-focus "
           >
             <ChevronRightIcon
               className={clsx("w-6 -m-2", props.visible ? "rotate-90" : "")}
@@ -108,7 +88,7 @@ function FontItem({
               </div>
             </div>
             {selector.isFamilySelected(family) && (
-              <CheckCircleIcon className="w-6 text-success opacity-50" />
+              <CheckCircleIcon className="w-6 opacity-50 text-success" />
             )}
           </button>
         )}
@@ -156,7 +136,7 @@ function FontItemVariant({
     selector.isVariantSelected(family, variantName)
 
   return (
-    <label className="flex gap-3 items-center cursor-pointer hover:bg-white/5 focus:outline-none p-4 leading-none transition select-none">
+    <label className="flex items-center gap-3 p-4 leading-none transition cursor-pointer select-none hover:bg-white/5 focus:outline-none">
       <input
         type="checkbox"
         className="checkbox"
@@ -167,14 +147,7 @@ function FontItemVariant({
             : selector.deselect(family, variantName)
 
           const fontsParam = newSelector.toParamString()
-
-          const newParams = new URLSearchParams(params)
-          if (fontsParam) {
-            newParams.set("fonts", fontsParam)
-          } else {
-            newParams.delete("fonts")
-          }
-          setParams(newParams)
+          setParams(compactParams({ ...params, fonts: fontsParam }))
         }}
       />
       <div className="flex flex-col gap-1">

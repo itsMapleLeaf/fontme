@@ -1,4 +1,3 @@
-import { DocumentDownloadIcon, TrashIcon } from "@heroicons/react/solid"
 import {
   Deferrable,
   deferred,
@@ -8,7 +7,6 @@ import {
 } from "@remix-run/node"
 import {
   Deferred,
-  Link,
   Links,
   LiveReload,
   Meta,
@@ -18,12 +16,12 @@ import {
   useSearchParams,
 } from "@remix-run/react"
 import type { CatchBoundaryComponent } from "@remix-run/react/routeModules"
-import clsx from "clsx"
 import { FontDict, loadFonts } from "~/modules/fonts/api.server"
 import { FontList, FontListFallback } from "~/modules/fonts/font-list"
 import { SearchForm } from "~/modules/ui/search-form"
-import { FontSelector } from "./modules/fonts/font-selector"
+import { SelectedFonts } from "./modules/fonts/selected-fonts"
 import { MaxWidthContainer } from "./modules/ui/max-width-container"
+import { RaisedPanel } from "./modules/ui/raised-panel"
 import tailwind from "./tailwind.css"
 
 const searchParamName = "search"
@@ -53,7 +51,7 @@ function Document({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className="bg-base-300 text-base-content overflow-y-scroll"
+      className="overflow-y-scroll bg-base-300 text-base-content"
       data-theme="dark"
     >
       <head>
@@ -75,19 +73,19 @@ export default function App() {
 
   const [params] = useSearchParams()
   const searchQuery = params.get(searchParamName) ?? ""
-  const selector = FontSelector.fromParamString(params.get("fonts") ?? "")
-  const selectedVariantCount = Object.values(selector.selections).flat().length
-
-  function getClearSelectedLink() {
-    const newParams = new URLSearchParams(params)
-    newParams.delete("fonts")
-    return `?${newParams.toString()}`
-  }
 
   return (
     <Document>
-      <div className="flex flex-col min-h-screen">
-        <div className="bg-base-200 py-4 shadow-md sticky top-0 z-10">
+      <LeftSidebar>
+        <RaisedPanel rounded={false} fullHeight>
+          <Deferred value={fonts} fallback={<p>Loading...</p>}>
+            {(fonts) => <SelectedFonts fonts={fonts} />}
+          </Deferred>
+        </RaisedPanel>
+      </LeftSidebar>
+
+      <div className="pl-80 -z-10">
+        <header className="sticky top-0 z-10 py-4 shadow-md bg-base-200">
           <MaxWidthContainer>
             <nav className="flex items-center gap-6">
               <h1 className="text-3xl">fontme</h1>
@@ -96,7 +94,7 @@ export default function App() {
               </div>
             </nav>
           </MaxWidthContainer>
-        </div>
+        </header>
 
         <main className="py-4">
           <MaxWidthContainer>
@@ -105,31 +103,13 @@ export default function App() {
             </Deferred>
           </MaxWidthContainer>
         </main>
-
-        <div
-          className={clsx(
-            "sticky bottom-0 bg-base-100 py-4 shadow-md transition mt-auto",
-            selectedVariantCount > 0 ? "translate-y-0" : "translate-y-full",
-          )}
-        >
-          <MaxWidthContainer>
-            <footer className="flex items-center gap-4">
-              <aside className="italic opacity-70">
-                {selectedVariantCount} variants selected
-              </aside>
-              <div className="flex-1" />
-              <Link to={getClearSelectedLink()} className="btn gap-2">
-                <TrashIcon className="w-6" /> Clear selected
-              </Link>
-              <button type="button" className="btn gap-2">
-                <DocumentDownloadIcon className="w-6" /> Save fonts
-              </button>
-            </footer>
-          </MaxWidthContainer>
-        </div>
       </div>
     </Document>
   )
+}
+
+function LeftSidebar({ children }: { children: React.ReactNode }) {
+  return <div className="fixed inset-y-0 left-0">{children}</div>
 }
 
 export const CatchBoundary: CatchBoundaryComponent = (props) => {
