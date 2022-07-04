@@ -7,9 +7,12 @@ specifiers:
   '@remix-run/node': 0.0.0-experimental-d28d77b8
   '@remix-run/react': 0.0.0-experimental-d28d77b8
   '@remix-run/serve': 0.0.0-experimental-d28d77b8
+  '@types/eslint': ^8.4.5
+  '@types/node': 16.11.43
   '@types/prettier': ^2.6.3
   '@types/react': ^18.0.14
   '@types/react-dom': ^18.0.5
+  '@types/wawoff2': ^1.0.0
   clsx: ^1.1.1
   daisyui: ^2.17.0
   dotenv: ^16.0.1
@@ -30,6 +33,7 @@ specifiers:
   type-fest: ^2.15.1
   typescript: ^4.7.4
   vitest: ^0.16.0
+  wawoff2: ^2.0.1
   zod: ^3.17.3
 
 dependencies:
@@ -52,14 +56,18 @@ dependencies:
   redis: 4.1.0
   remix-typed: 0.3.0_so3lor2zny5ptugn3mo32xajqe
   type-fest: 2.15.1
+  wawoff2: 2.0.1
   zod: 3.17.3
 
 devDependencies:
   '@remix-run/dev': 0.0.0-experimental-d28d77b8_biqbaboplfbrettd7655fr4n2y
   '@remix-run/serve': 0.0.0-experimental-d28d77b8_biqbaboplfbrettd7655fr4n2y
+  '@types/eslint': 8.4.5
+  '@types/node': 16.11.43
   '@types/prettier': 2.6.3
   '@types/react': 18.0.14
   '@types/react-dom': 18.0.5
+  '@types/wawoff2': 1.0.0
   eslint: 8.18.0
   npm-run-all: 4.1.5
   tailwindcss: 3.1.4
@@ -1724,6 +1732,13 @@ packages:
       '@types/ms': 0.7.31
     dev: true
 
+  /@types/eslint/8.4.5:
+    resolution: {integrity: sha512-dhsC09y1gpJWnK+Ff4SGvCuSnk9DaU0BJZSzOwa6GVSg65XtTugLBITDAAzRU5duGBoXBHpdR/9jHGxJjNflJQ==}
+    dependencies:
+      '@types/estree': 0.0.52
+      '@types/json-schema': 7.0.11
+    dev: true
+
   /@types/estree-jsx/0.0.1:
     resolution: {integrity: sha512-gcLAYiMfQklDCPjQegGn0TBAn9it05ISEsEhlKQUddIk7o2XDokOcTN7HBO8tznM0D9dGezvHEfRZBfZf6me0A==}
     dependencies:
@@ -1759,6 +1774,10 @@ packages:
     resolution: {integrity: sha512-3YP80IxxFJB4b5tYC2SUPwkg0XQLiu0nWvhRgEatgjf+29IcWO9X1k8xRv5DGssJ/lCrjYTjQPcobJr2yWIVuQ==}
     dev: true
 
+  /@types/json-schema/7.0.11:
+    resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
+    dev: true
+
   /@types/keyv/3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
@@ -1785,6 +1804,10 @@ packages:
 
   /@types/ms/0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
+    dev: true
+
+  /@types/node/16.11.43:
+    resolution: {integrity: sha512-GqWykok+3uocgfAJM8imbozrqLnPyTrpFlrryURQlw1EesPUCx5XxTiucWDSFF9/NUEXDuD4bnvHm8xfVGWTpQ==}
     dev: true
 
   /@types/node/18.0.0:
@@ -1826,6 +1849,12 @@ packages:
 
   /@types/unist/2.0.6:
     resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
+    dev: true
+
+  /@types/wawoff2/1.0.0:
+    resolution: {integrity: sha512-UvCfTrfjYZUw2OokkEmy0tB8dZeoWc1hSSZfHa9L5uHTsd6e3KwCNDJq1yHdcOhCLT+Zmvwgds1Lr/gQzJwDAw==}
+    dependencies:
+      '@types/node': 18.0.0
     dev: true
 
   /@virtuoso.dev/react-urx/0.2.13_react@18.2.0:
@@ -1949,7 +1978,6 @@ packages:
 
   /argparse/2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
-    dev: true
 
   /arr-diff/4.0.0:
     resolution: {integrity: sha512-YVIQ82gZPGBebQV/a8dar4AitzCQs0jjXwMPZllpXMaGjXPYVUawSxQrRsjhjupyVxEvbHgUmIhKVlND+j02kA==}
@@ -7369,6 +7397,13 @@ packages:
       - stylus
       - supports-color
     dev: true
+
+  /wawoff2/2.0.1:
+    resolution: {integrity: sha512-r0CEmvpH63r4T15ebFqeOjGqU4+EgTx4I510NtK35EMciSdcTxCw3Byy3JnBonz7iyIFZ0AbVo0bbFpEVuhCYA==}
+    hasBin: true
+    dependencies:
+      argparse: 2.0.1
+    dev: false
 
   /wcwidth/1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}

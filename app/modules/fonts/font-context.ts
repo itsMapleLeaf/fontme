@@ -19,6 +19,7 @@ export type VariantListItem = {
   name: string
   weight: string
   style: string
+  url: string
   selected: boolean
 }
 
@@ -57,6 +58,7 @@ export function makeFontContext(
           name,
           weight: variant.weight,
           style: variant.style,
+          url: variant.url,
           selected: !!selectedFonts[familyName]?.[name],
         }
       })

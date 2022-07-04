@@ -32,14 +32,18 @@
     "redis": "^4.1.0",
     "remix-typed": "^0.3.0",
     "type-fest": "^2.15.1",
+    "wawoff2": "^2.0.1",
     "zod": "^3.17.3"
   },
   "devDependencies": {
     "@remix-run/dev": "0.0.0-experimental-d28d77b8",
     "@remix-run/serve": "0.0.0-experimental-d28d77b8",
+    "@types/eslint": "^8.4.5",
+    "@types/node": "16.11.43",
     "@types/prettier": "^2.6.3",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
+    "@types/wawoff2": "^1.0.0",
     "eslint": "^8.18.0",
     "npm-run-all": "^4.1.5",
     "tailwindcss": "^3.1.4",

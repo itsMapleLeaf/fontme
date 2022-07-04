@@ -46,7 +46,10 @@ export default function Index() {
             aria-label="Font selections"
             className="flex flex-col h-full gap-4 p-4 overflow-y-auto w-80"
           >
-            <Deferred value={fonts} fallback={<p>Loading...</p>}>
+            <Deferred
+              value={fonts}
+              fallback={<EmptyState>Loading...</EmptyState>}
+            >
               {(fonts) => {
                 const context = makeFontContext(fonts, params)
                 return context.selectedFontList.length > 0 ? (
@@ -59,8 +62,8 @@ export default function Index() {
                       />
                     ))}
                     <div className="flex-1" />
+                    <SaveFontsButton context={context} />
                     <ClearSelectedFontsButton context={context} />
-                    <SaveFontsButton />
                   </>
                 ) : (
                   <div className="grid flex-1 place-items-center">
@@ -96,9 +99,7 @@ export default function Index() {
           <MaxWidthContainer>
             <Deferred
               value={fonts}
-              fallback={
-                <p className="p-3 text-center opacity-50">Loading...</p>
-              }
+              fallback={<EmptyState>Loading...</EmptyState>}
             >
               {(fonts) => {
                 const context = makeFontContext(fonts, params)
