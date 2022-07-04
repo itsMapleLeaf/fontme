@@ -5,10 +5,6 @@ import { Collapse } from "~/modules/ui/collapse"
 import { FontContext, FontListItem, VariantListItem } from "./font-context"
 import { FontPreviewText } from "./font-preview-text"
 
-export function FontListFallback() {
-  return <p className="p-3 text-center opacity-50">Loading...</p>
-}
-
 export function FontCard({
   font,
   context,

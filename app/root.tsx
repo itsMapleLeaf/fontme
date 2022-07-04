@@ -19,7 +19,7 @@ import {
 import type { CatchBoundaryComponent } from "@remix-run/react/routeModules"
 import { Virtuoso } from "react-virtuoso"
 import { FontDict, loadFonts } from "~/modules/fonts/api.server"
-import { FontCard, FontListFallback } from "~/modules/fonts/font-list"
+import { FontCard } from "~/modules/fonts/font-list"
 import { SearchForm } from "~/modules/ui/search-form"
 import { useWindowSize } from "./modules/dom/use-window-size"
 import { ClearSelectedFontsButton } from "./modules/fonts/clear-selected-fonts-button"
@@ -31,8 +31,6 @@ import { makeSearchContext } from "./modules/search/search-context"
 import { MaxWidthContainer } from "./modules/ui/max-width-container"
 import { RaisedPanel } from "./modules/ui/raised-panel"
 import tailwind from "./tailwind.css"
-
-const searchParamName = "search"
 
 type LoaderData = {
   fonts: Deferrable<FontDict>
@@ -131,7 +129,12 @@ export default function App() {
 
         <main className="py-4">
           <MaxWidthContainer>
-            <Deferred value={fonts} fallback={<FontListFallback />}>
+            <Deferred
+              value={fonts}
+              fallback={
+                <p className="p-3 text-center opacity-50">Loading...</p>
+              }
+            >
               {(fonts) => {
                 const context = makeFontContext(fonts, params)
                 return (
