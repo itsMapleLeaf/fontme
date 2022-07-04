@@ -3,8 +3,10 @@ export function debounce<Args extends unknown[]>(
   period: number,
 ) {
   let timer: NodeJS.Timeout
-  return (...args: Args) => {
+  function callDebounced(...args: Args) {
     clearTimeout(timer)
     timer = setTimeout(() => fn(...args), period)
   }
+  callDebounced.cancel = () => clearTimeout(timer)
+  return callDebounced
 }

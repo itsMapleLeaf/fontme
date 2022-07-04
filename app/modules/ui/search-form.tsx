@@ -1,40 +1,61 @@
 import { SearchIcon } from "@heroicons/react/solid"
-import { Form, useSearchParams } from "@remix-run/react"
-import { useMemo } from "react"
+import { Form } from "@remix-run/react"
+import { useEffect, useMemo, useRef } from "react"
 import { debounce } from "~/modules/common/debounce"
+import { useLatestRef } from "../react/use-latest-ref"
 
-export function SearchForm({ paramName }: { paramName: string }) {
-  const [params, setParams] = useSearchParams()
-
-  const setParamsDebounced = useMemo(
-    () => debounce(setParams, 300),
-    [setParams],
-  )
+export function SearchForm({
+  name,
+  defaultValue,
+  onSubmit,
+}: {
+  name: string
+  defaultValue: string
+  onSubmit: (value: string) => void
+}) {
+  const onSubmitDebounced = useDebouncedCallback(onSubmit, 500)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <Form className="relative">
+    <Form
+      className="relative"
+      onSubmit={(event) => {
+        event.preventDefault()
+        onSubmit(inputRef.current!.value)
+        onSubmitDebounced.cancel()
+      }}
+    >
       <input
-        className="input input-bordered w-full pr-10"
-        name={paramName}
+        className="w-full pr-10 input input-bordered"
+        name={name}
         placeholder="Search..."
-        defaultValue={params.get(paramName) ?? ""}
-        onChange={(event) => {
-          const newParams = new URLSearchParams(params)
-          if (event.target.value) {
-            newParams.set(paramName, event.target.value)
-          } else {
-            newParams.delete(paramName)
-          }
-          setParamsDebounced(newParams, { replace: true })
-        }}
+        defaultValue={defaultValue}
+        onChange={(event) => onSubmitDebounced(event.target.value)}
+        ref={inputRef}
       />
       <button
         type="submit"
-        className="btn btn-ghost p-3 absolute right-0 inset-y-0"
+        className="absolute inset-y-0 right-0 p-3 btn btn-ghost"
         title="Submit"
       >
         <SearchIcon className="w-5" />
       </button>
     </Form>
   )
+}
+
+function useDebouncedCallback<Args extends unknown[]>(
+  callback: (...args: Args) => void,
+  delay: number,
+) {
+  const callbackRef = useLatestRef(callback)
+
+  const debounced = useMemo(
+    () => debounce((...args: Args) => callbackRef.current?.(...args), delay),
+    [callbackRef, delay],
+  )
+
+  useEffect(() => () => debounced.cancel(), [debounced])
+
+  return debounced
 }
