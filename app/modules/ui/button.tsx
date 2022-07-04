@@ -9,6 +9,8 @@ export type ButtonProps = {
   shape?: "default" | "square" | "circle"
   label: ReactNode
   icon?: ReactNode
+  loading?: boolean
+  disabled?: boolean
   onClick?: (event: React.MouseEvent) => void
   renderContainer?: (props: ButtonContainerProps) => ReactNode
 }
@@ -17,6 +19,7 @@ export type ButtonContainerProps = {
   type: "button" | "submit" | "reset"
   className: string
   children: ReactNode
+  disabled?: boolean
   onClick?: (event: React.MouseEvent) => void
 }
 
@@ -27,6 +30,8 @@ export function Button({
   shape = "default",
   label,
   icon,
+  loading,
+  disabled,
   onClick,
   renderContainer = (props) => <button {...props} />,
 }: ButtonProps) {
@@ -53,7 +58,14 @@ export function Button({
     <>
       {renderContainer({
         type,
-        className: clsx("btn gap-2", variantClass, sizeClass, shapeClass),
+        className: clsx(
+          "btn gap-2",
+          variantClass,
+          sizeClass,
+          shapeClass,
+          loading && clsx`loading`,
+        ),
+        disabled,
         children: (
           <>
             {icon}

@@ -1,10 +1,14 @@
-import { DocumentDownloadIcon } from "@heroicons/react/solid"
+import { CheckCircleIcon, DocumentDownloadIcon } from "@heroicons/react/solid"
+import { useAsync } from "../state/use-async"
+import { useTimer } from "../state/use-timer"
 import { Button } from "../ui/button"
 import { FontContext } from "./font-context"
 
 export function SaveFontsButton({ context }: { context: FontContext }) {
-  const saveFonts = async () => {
-    try {
+  const successTimer = useTimer(1000)
+
+  const [state, saveFonts] = useAsync(
+    async () => {
       const directory = await window.showDirectoryPicker({
         mode: "readwrite",
       })
@@ -26,18 +30,28 @@ export function SaveFontsButton({ context }: { context: FontContext }) {
 
       const cssFile = {
         name: "fonts.css",
-        data: fontFiles
-          .map(
-            ({ font, variant, name }) => css`
-              @font-face {
-                font-family: "${font.family}";
-                font-style: ${variant.style};
-                font-weight: ${variant.weight};
-                src: url("./${name}") format("woff2");
-              }
-            `,
-          )
-          .join("\n\n"),
+        data: Promise.all([
+          import("prettier/standalone"),
+          import("prettier/parser-postcss"),
+        ]).then(([prettier, postcssParser]) => {
+          const cssCode = fontFiles
+            .map(
+              ({ font, variant, name }) => css`
+                @font-face {
+                  font-family: "${font.family}";
+                  font-style: ${variant.style};
+                  font-weight: ${variant.weight};
+                  src: url("./${name}") format("woff2");
+                }
+              `,
+            )
+            .join("\n\n")
+
+          return prettier.default.format(cssCode, {
+            parser: "css",
+            plugins: [postcssParser.default],
+          })
+        }),
       }
 
       await Promise.all(
@@ -48,17 +62,31 @@ export function SaveFontsButton({ context }: { context: FontContext }) {
           await writable.close()
         }),
       )
-    } catch (error) {
-      console.error(error)
-    }
-  }
+    },
+    { onSuccess: successTimer.start, onError: console.error },
+  )
 
   return (
-    <Button
-      icon={<DocumentDownloadIcon className="w-6" />}
-      label="Save fonts"
-      onClick={saveFonts}
-    />
+    <div className="grid gap-4">
+      {state.status === "error" && (
+        <p role="alert" className="text-center text-error">
+          Oops, something went wrong. Try again.
+        </p>
+      )}
+      <Button
+        icon={
+          successTimer.running ? (
+            <CheckCircleIcon className="w-6 text-success" />
+          ) : (
+            <DocumentDownloadIcon className="w-6" />
+          )
+        }
+        label={successTimer.running ? "Saved!" : "Save fonts"}
+        loading={state.status === "loading"}
+        disabled={state.status === "loading"}
+        onClick={saveFonts}
+      />
+    </div>
   )
 }
 
