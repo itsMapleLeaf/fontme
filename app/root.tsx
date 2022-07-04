@@ -39,6 +39,7 @@ export const meta: MetaFunction = () => ({
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: tailwind },
+  { rel: "stylesheet", href: "/fonts/fonts.css" },
 ]
 
 function Document({ children }: { children: React.ReactNode }) {
