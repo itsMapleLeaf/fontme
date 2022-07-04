@@ -86,17 +86,16 @@ export function makeFontContext(
 
   const serializeFontSelections = (selections: ParsedFontsParam) =>
     Object.entries(selections)
-      .map(([familyName, variantRecord]) =>
-        Object.entries(variantRecord)
-          .map(([name, variant]) => `${familyName}:${name}`)
-          .join(","),
+      .map(
+        ([familyName, variantRecord]) =>
+          `${familyName}:${Object.keys(variantRecord).join(",")}`,
       )
       .join(";")
 
   const getSelectVariantLink = (familyName: string, variantName: string) =>
     "?" +
     compactParams({
-      ...searchParams,
+      ...Object.fromEntries(searchParams),
       fonts: serializeFontSelections({
         ...selectedFonts,
         [familyName]: {
@@ -109,7 +108,7 @@ export function makeFontContext(
   const getDeselectVariantLink = (familyName: string, variantName: string) =>
     "?" +
     compactParams({
-      ...searchParams,
+      ...Object.fromEntries(searchParams),
       fonts: serializeFontSelections({
         ...selectedFonts,
         [familyName]: omit(selectedFonts[familyName] ?? {}, [variantName]),
@@ -119,14 +118,13 @@ export function makeFontContext(
   const getDeselectFamilyLink = (familyName: string) =>
     "?" +
     compactParams({
-      ...searchParams,
+      ...Object.fromEntries(searchParams),
       fonts: serializeFontSelections(omit(selectedFonts, [familyName])),
     })
 
   const getClearSelectionLink = () =>
-    "?" + compactParams({ ...searchParams, fonts: "" })
+    "?" + compactParams({ ...Object.fromEntries(searchParams), fonts: "" })
 
-  // returns the normal 400 variant if it exists, otherwise returns the first variant
   const getDefaultPreviewVariant = (familyName: string) => {
     const family = fontDict.families[familyName] ?? raise("Family not found")
     const variants = makeVariantList(Object.keys(family.variants), familyName)
