@@ -4,7 +4,7 @@ import { compactParams } from "../dom/compact-params"
 import { FontDict } from "./api.server"
 
 // query param format: ?fonts=Roboto:400,400italic;Roboto+Mono:400,400italic
-export type ParsedFontsParam = {
+type ParsedFontsParam = {
   [familyName: string]: {
     [variantName: string]: true
   }
