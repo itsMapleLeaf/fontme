@@ -13,6 +13,7 @@ import { ClearSelectedFontsButton } from "~/modules/fonts/clear-selected-fonts-b
 import { makeFontContext } from "~/modules/fonts/font-context"
 import { FontCard } from "~/modules/fonts/font-list"
 import { pangrams } from "~/modules/fonts/pangrams"
+import { SaveFontsButton } from "~/modules/fonts/save-fonts-button"
 import { SelectedFont } from "~/modules/fonts/selected-font"
 import { makeSearchContext } from "~/modules/search/search-context"
 import { MaxWidthContainer } from "~/modules/ui/max-width-container"
@@ -43,7 +44,7 @@ export default function Index() {
         <RaisedPanel rounded={false} fullHeight>
           <section
             aria-label="Font selections"
-            className="flex flex-col h-full gap-4 p-4 w-80"
+            className="flex flex-col h-full gap-4 p-4 overflow-y-auto w-80"
           >
             <Deferred value={fonts} fallback={<p>Loading...</p>}>
               {(fonts) => {
@@ -59,7 +60,7 @@ export default function Index() {
                     ))}
                     <div className="flex-1" />
                     <ClearSelectedFontsButton context={context} />
-                    {/* <SaveFontsButton /> */}
+                    <SaveFontsButton />
                   </>
                 ) : (
                   <div className="grid flex-1 place-items-center">
