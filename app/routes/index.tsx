@@ -5,6 +5,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "@remix-run/react"
+import { matchSorter } from "match-sorter"
 import { Virtuoso } from "react-virtuoso"
 import { useWindowSize } from "~/modules/dom/use-window-size"
 import { FontDict, loadFonts } from "~/modules/fonts/api.server"
@@ -61,9 +62,11 @@ export default function Index() {
                     {/* <SaveFontsButton /> */}
                   </>
                 ) : (
-                  <p className="grid flex-1 text-2xl italic font-light text-center opacity-50 place-items-center">
-                    Font selections will appear here!
-                  </p>
+                  <div className="grid flex-1 place-items-center">
+                    <EmptyState>
+                      Choose some fonts, and they'll appear here.
+                    </EmptyState>
+                  </div>
                 )
               }}
             </Deferred>
@@ -98,11 +101,18 @@ export default function Index() {
             >
               {(fonts) => {
                 const context = makeFontContext(fonts, params)
-                return (
+
+                const list = searchContext.searchQuery
+                  ? matchSorter(context.fontList, searchContext.searchQuery, {
+                      keys: ["family"],
+                    })
+                  : context.fontList
+
+                return list.length > 0 ? (
                   <div className="-my-2">
                     <Virtuoso
                       useWindowScroll
-                      data={context.fontList}
+                      data={list}
                       overscan={height}
                       itemContent={(index, font) => (
                         <div className="py-2">
@@ -115,6 +125,8 @@ export default function Index() {
                       )}
                     />
                   </div>
+                ) : (
+                  <EmptyState>Couldn't find anything :(</EmptyState>
                 )
               }}
             </Deferred>
@@ -136,4 +148,12 @@ function Header({ children }: { children: React.ReactNode }) {
 
 function LeftSidebar({ children }: { children: React.ReactNode }) {
   return <div className="fixed inset-y-0 left-0">{children}</div>
+}
+
+function EmptyState({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="py-8 text-2xl italic font-light text-center opacity-70">
+      {children}
+    </p>
+  )
 }
