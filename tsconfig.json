@@ -1,5 +1,5 @@
 {
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mjs"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "es2021"],
     "isolatedModules": true,
