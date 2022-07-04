@@ -2,7 +2,7 @@ import { useSyncExternalStore } from "react"
 
 export class Cell<T> {
   private value: T
-  subscribers = new Set<(value: T) => void>()
+  private readonly subscribers = new Set<(value: T) => void>()
 
   constructor(value: T) {
     this.value = value
