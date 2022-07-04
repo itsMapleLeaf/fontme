@@ -2,7 +2,11 @@
 module.exports = {
   content: ["app/**/*.{ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["Fira Sans", "sans"],
+      },
+    },
   },
   plugins: [require("daisyui")],
 }
