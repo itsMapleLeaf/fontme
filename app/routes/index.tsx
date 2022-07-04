@@ -12,7 +12,6 @@ import { ClearSelectedFontsButton } from "~/modules/fonts/clear-selected-fonts-b
 import { makeFontContext } from "~/modules/fonts/font-context"
 import { FontCard } from "~/modules/fonts/font-list"
 import { pangrams } from "~/modules/fonts/pangrams"
-import { SaveFontsButton } from "~/modules/fonts/save-fonts-button"
 import { SelectedFont } from "~/modules/fonts/selected-font"
 import { makeSearchContext } from "~/modules/search/search-context"
 import { MaxWidthContainer } from "~/modules/ui/max-width-container"
@@ -48,7 +47,7 @@ export default function Index() {
             <Deferred value={fonts} fallback={<p>Loading...</p>}>
               {(fonts) => {
                 const context = makeFontContext(fonts, params)
-                return (
+                return context.selectedFontList.length > 0 ? (
                   <>
                     {context.selectedFontList.map((font) => (
                       <SelectedFont
@@ -59,8 +58,12 @@ export default function Index() {
                     ))}
                     <div className="flex-1" />
                     <ClearSelectedFontsButton context={context} />
-                    <SaveFontsButton />
+                    {/* <SaveFontsButton /> */}
                   </>
+                ) : (
+                  <p className="grid flex-1 text-2xl italic font-light text-center opacity-50 place-items-center">
+                    Font selections will appear here!
+                  </p>
                 )
               }}
             </Deferred>
