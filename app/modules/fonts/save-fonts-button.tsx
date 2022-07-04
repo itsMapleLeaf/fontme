@@ -1,4 +1,5 @@
 import { CheckCircleIcon, DocumentDownloadIcon } from "@heroicons/react/solid"
+import { logPromiseTime } from "../common/log-promise-time"
 import { useAsync } from "../state/use-async"
 import { useTimer } from "../state/use-timer"
 import { Button } from "../ui/button"
@@ -21,8 +22,11 @@ export function SaveFontsButton({ context }: { context: FontContext }) {
         const normalizedFamily = font.family.replaceAll(" ", "-")
         const fileName = `${normalizedFamily}-${variant.weight}-${variant.style}.woff2`
 
-        const data = fetch(`/api/${fileName}.woff2?url=${variant.url}`).then(
-          (response) => response.blob(),
+        const data = logPromiseTime(
+          "conversion fetch",
+          fetch(`/api/${fileName}.woff2?url=${variant.url}`).then((response) =>
+            response.blob(),
+          ),
         )
 
         return { font, variant, name: fileName, data }
@@ -31,8 +35,14 @@ export function SaveFontsButton({ context }: { context: FontContext }) {
       const cssFile = {
         name: "fonts.css",
         data: Promise.all([
-          import("prettier/standalone"),
-          import("prettier/parser-postcss"),
+          logPromiseTime(
+            "import prettier/standalone",
+            import("prettier/standalone"),
+          ),
+          logPromiseTime(
+            "import prettier/parser-postcss",
+            import("prettier/parser-postcss"),
+          ),
         ]).then(([prettier, postcssParser]) => {
           const cssCode = fontFiles
             .map(
@@ -58,7 +68,7 @@ export function SaveFontsButton({ context }: { context: FontContext }) {
         [...fontFiles, cssFile].map(async ({ name, data }) => {
           const file = await directory.getFileHandle(name, { create: true })
           const writable = await file.createWritable()
-          await writable.write(await data)
+          await logPromiseTime("write font file", writable.write(await data))
           await writable.close()
         }),
       )

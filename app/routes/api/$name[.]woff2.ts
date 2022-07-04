@@ -1,5 +1,6 @@
 import { LoaderFunction } from "@remix-run/node"
 import { compress } from "wawoff2"
+import { logPromiseTime } from "~/modules/common/log-promise-time"
 
 export const loader: LoaderFunction = async ({ request }) => {
   const fontUrl = new URL(request.url).searchParams.get("url")
@@ -10,9 +11,14 @@ export const loader: LoaderFunction = async ({ request }) => {
     })
   }
 
-  const response = await fetch(fontUrl)
-  const input = await response.arrayBuffer()
-  const output = await compress(Buffer.from(input))
+  const input = await logPromiseTime(
+    "fetch font",
+    fetch(fontUrl).then((response) => response.arrayBuffer()),
+  )
+  const output = await logPromiseTime(
+    "compress font",
+    compress(Buffer.from(input)),
+  )
 
   return new Response(output, {
     headers: {
