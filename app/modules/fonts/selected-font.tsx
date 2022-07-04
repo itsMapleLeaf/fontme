@@ -32,7 +32,10 @@ export function SelectedFont({
         />
       </div>
       {font.variants.map((variant) => (
-        <div className="flex items-center justify-between -mr-2">
+        <div
+          key={variant.name}
+          className="flex items-center justify-between -mr-2"
+        >
           <p className="opacity-70">
             <FontPreviewText
               family={font.family}

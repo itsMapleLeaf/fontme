@@ -5,7 +5,8 @@ export function makeSearchContext(searchParams: URLSearchParams) {
   const searchQuery = searchParams.get(paramName) ?? ""
 
   const getSearchLink = (query: string) =>
-    "?" + compactParams({ ...searchParams, [paramName]: query })
+    "?" +
+    compactParams({ ...Object.fromEntries(searchParams), [paramName]: query })
 
   return { paramName, searchQuery, getSearchLink }
 }
