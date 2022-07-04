@@ -5,7 +5,7 @@ export function SaveFontsButton() {
   return (
     <Button
       icon={<DocumentDownloadIcon className="w-6" />}
-      label="Save fonts"
+      label="Save fonts (WIP)"
     />
   )
 }
