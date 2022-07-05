@@ -8,18 +8,15 @@ specifiers:
   '@remix-run/react': 0.0.0-experimental-d28d77b8
   '@remix-run/serve': 0.0.0-experimental-d28d77b8
   '@types/eslint': ^8.4.5
-  '@types/node': 16.11.43
+  '@types/node': 18.0.1
   '@types/prettier': ^2.6.3
   '@types/react': ^18.0.14
   '@types/react-dom': ^18.0.5
   '@types/wawoff2': ^1.0.0
-  clsx: ^1.1.1
-  daisyui: ^2.17.0
-  dotenv: ^16.0.1
-  eslint: ^8.18.0
+  clsx: ^1.2.0
+  daisyui: ^2.18.0
+  eslint: ^8.19.0
   execa: ^6.1.0
-  fast-stable-json-stringify: ^1.0.0
-  highlight.js: ^11.5.1
   isbot: ^3.5.0
   jszip: ^3.10.0
   match-sorter: ^6.3.1
@@ -29,12 +26,11 @@ specifiers:
   react: ^18.2.0
   react-dom: ^18.2.0
   react-virtuoso: ^2.16.1
-  redis: ^4.1.0
+  redis: ^4.1.1
   remix-typed: ^0.3.0
   tailwindcss: ^3.1.4
-  type-fest: ^2.15.1
   typescript: ^4.7.4
-  vitest: ^0.16.0
+  vitest: ^0.17.0
   wawoff2: ^2.0.1
   zod: ^3.17.3
 
@@ -43,12 +39,9 @@ dependencies:
   '@heroicons/react': 1.0.6_react@18.2.0
   '@remix-run/node': 0.0.0-experimental-d28d77b8_biqbaboplfbrettd7655fr4n2y
   '@remix-run/react': 0.0.0-experimental-d28d77b8_biqbaboplfbrettd7655fr4n2y
-  clsx: 1.1.1
-  daisyui: 2.17.0
-  dotenv: 16.0.1
+  clsx: 1.2.0
+  daisyui: 2.18.0
   execa: 6.1.0
-  fast-stable-json-stringify: 1.0.0
-  highlight.js: 11.5.1
   isbot: 3.5.0
   jszip: 3.10.0
   match-sorter: 6.3.1
@@ -57,9 +50,8 @@ dependencies:
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-virtuoso: 2.16.1_biqbaboplfbrettd7655fr4n2y
-  redis: 4.1.0
+  redis: 4.1.1
   remix-typed: 0.3.0_so3lor2zny5ptugn3mo32xajqe
-  type-fest: 2.15.1
   wawoff2: 2.0.1
   zod: 3.17.3
 
@@ -67,16 +59,16 @@ devDependencies:
   '@remix-run/dev': 0.0.0-experimental-d28d77b8_biqbaboplfbrettd7655fr4n2y
   '@remix-run/serve': 0.0.0-experimental-d28d77b8_biqbaboplfbrettd7655fr4n2y
   '@types/eslint': 8.4.5
-  '@types/node': 16.11.43
+  '@types/node': 18.0.1
   '@types/prettier': 2.6.3
   '@types/react': 18.0.14
   '@types/react-dom': 18.0.5
   '@types/wawoff2': 1.0.0
-  eslint: 8.18.0
+  eslint: 8.19.0
   npm-run-all: 4.1.5
   tailwindcss: 3.1.4
   typescript: 4.7.4
-  vitest: 0.16.0
+  vitest: 0.17.0
 
 packages:
 
@@ -1455,16 +1447,16 @@ packages:
       json-parse-even-better-errors: 2.3.1
     dev: true
 
-  /@redis/bloom/1.0.2_@redis+client@1.1.0:
+  /@redis/bloom/1.0.2_@redis+client@1.1.1:
     resolution: {integrity: sha512-EBw7Ag1hPgFzdznK2PBblc1kdlj5B5Cw3XwI9/oG7tSn85/HKy3X9xHy/8tm/eNXJYHLXHJL/pkwBpFMVVefkw==}
     peerDependencies:
       '@redis/client': ^1.0.0
     dependencies:
-      '@redis/client': 1.1.0
+      '@redis/client': 1.1.1
     dev: false
 
-  /@redis/client/1.1.0:
-    resolution: {integrity: sha512-xO9JDIgzsZYDl3EvFhl6LC52DP3q3GCMUer8zHgKV6qSYsq1zB+pZs9+T80VgcRogrlRYhi4ZlfX6A+bHiBAgA==}
+  /@redis/client/1.1.1:
+    resolution: {integrity: sha512-IGGyazghVYuqsXv7/AxzMS0HmCPj0JRQX4l0XZ52BdJTUv2lNSnPgfWEE65HnC2gZCEO7STyaJbNultn1i0Y3g==}
     engines: {node: '>=14'}
     dependencies:
       cluster-key-slot: 1.1.0
@@ -1472,36 +1464,36 @@ packages:
       yallist: 4.0.0
     dev: false
 
-  /@redis/graph/1.0.1_@redis+client@1.1.0:
+  /@redis/graph/1.0.1_@redis+client@1.1.1:
     resolution: {integrity: sha512-oDE4myMCJOCVKYMygEMWuriBgqlS5FqdWerikMoJxzmmTUErnTRRgmIDa2VcgytACZMFqpAOWDzops4DOlnkfQ==}
     peerDependencies:
       '@redis/client': ^1.0.0
     dependencies:
-      '@redis/client': 1.1.0
+      '@redis/client': 1.1.1
     dev: false
 
-  /@redis/json/1.0.3_@redis+client@1.1.0:
+  /@redis/json/1.0.3_@redis+client@1.1.1:
     resolution: {integrity: sha512-4X0Qv0BzD9Zlb0edkUoau5c1bInWSICqXAGrpwEltkncUwcxJIGEcVryZhLgb0p/3PkKaLIWkjhHRtLe9yiA7Q==}
     peerDependencies:
       '@redis/client': ^1.0.0
     dependencies:
-      '@redis/client': 1.1.0
+      '@redis/client': 1.1.1
     dev: false
 
-  /@redis/search/1.0.6_@redis+client@1.1.0:
+  /@redis/search/1.0.6_@redis+client@1.1.1:
     resolution: {integrity: sha512-pP+ZQRis5P21SD6fjyCeLcQdps+LuTzp2wdUbzxEmNhleighDDTD5ck8+cYof+WLec4csZX7ks+BuoMw0RaZrA==}
     peerDependencies:
       '@redis/client': ^1.0.0
     dependencies:
-      '@redis/client': 1.1.0
+      '@redis/client': 1.1.1
     dev: false
 
-  /@redis/time-series/1.0.3_@redis+client@1.1.0:
+  /@redis/time-series/1.0.3_@redis+client@1.1.1:
     resolution: {integrity: sha512-OFp0q4SGrTH0Mruf6oFsHGea58u8vS/iI5+NpYdicaM+7BgqBZH8FFvNZ8rYYLrUO/QRqMq72NpXmxLVNcdmjA==}
     peerDependencies:
       '@redis/client': ^1.0.0
     dependencies:
-      '@redis/client': 1.1.0
+      '@redis/client': 1.1.1
     dev: false
 
   /@remix-run/dev/0.0.0-experimental-d28d77b8_biqbaboplfbrettd7655fr4n2y:
@@ -1713,7 +1705,7 @@ packages:
     dependencies:
       '@types/http-cache-semantics': 4.0.1
       '@types/keyv': 3.1.4
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
       '@types/responselike': 1.0.0
     dev: true
 
@@ -1761,7 +1753,7 @@ packages:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
     dependencies:
       '@types/minimatch': 3.0.5
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
     dev: true
 
   /@types/hast/2.3.4:
@@ -1785,7 +1777,7 @@ packages:
   /@types/keyv/3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
     dev: true
 
   /@types/mdast/3.0.10:
@@ -1810,12 +1802,8 @@ packages:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
     dev: true
 
-  /@types/node/16.11.43:
-    resolution: {integrity: sha512-GqWykok+3uocgfAJM8imbozrqLnPyTrpFlrryURQlw1EesPUCx5XxTiucWDSFF9/NUEXDuD4bnvHm8xfVGWTpQ==}
-    dev: true
-
-  /@types/node/18.0.0:
-    resolution: {integrity: sha512-cHlGmko4gWLVI27cGJntjs/Sj8th9aYwplmZFwmmgYQQvL5NUsgVJG7OddLvNfLqYS31KFN0s3qlaD9qCaxACA==}
+  /@types/node/18.0.1:
+    resolution: {integrity: sha512-CmR8+Tsy95hhwtZBKJBs0/FFq4XX7sDZHlGGf+0q+BRZfMbOTkzkj0AFAuTyXbObDIoanaBBW0+KEW+m3N16Wg==}
     dev: true
 
   /@types/normalize-package-data/2.4.1:
@@ -1845,7 +1833,7 @@ packages:
   /@types/responselike/1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
     dev: true
 
   /@types/scheduler/0.16.2:
@@ -1858,7 +1846,7 @@ packages:
   /@types/wawoff2/1.0.0:
     resolution: {integrity: sha512-UvCfTrfjYZUw2OokkEmy0tB8dZeoWc1hSSZfHa9L5uHTsd6e3KwCNDJq1yHdcOhCLT+Zmvwgds1Lr/gQzJwDAw==}
     dependencies:
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
     dev: true
 
   /@virtuoso.dev/react-urx/0.2.13_react@18.2.0:
@@ -2480,8 +2468,8 @@ packages:
     engines: {node: '>=0.8'}
     dev: true
 
-  /clsx/1.1.1:
-    resolution: {integrity: sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==}
+  /clsx/1.2.0:
+    resolution: {integrity: sha512-EPRP7XJsM1y0iCU3Z7C7jFKdQboXSeHgEfzQUTlz7m5NP3hDrlz48aUsmNGp4pC+JOW9WA3vIRqlYuo/bl4Drw==}
     engines: {node: '>=6'}
     dev: false
 
@@ -2662,8 +2650,8 @@ packages:
   /csstype/3.1.0:
     resolution: {integrity: sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==}
 
-  /daisyui/2.17.0:
-    resolution: {integrity: sha512-U8eA8IvwH0JSi72WbRZdmJcYZek3ERMPFPAVFhnYc6dGnobeIHLGBz8J4q012I9YVDUqXFrWz13rpn+SBdn7qQ==}
+  /daisyui/2.18.0:
+    resolution: {integrity: sha512-PIS+byC2r90VZV/9RUD2E3BsyzE0cj4PmFTDQqGd+4+hnVP5OB3DnjPBhjhfJwySErzpz0ZVOGRi/X9rWRhP5A==}
     peerDependencies:
       autoprefixer: ^10.0.2
       postcss: ^8.1.6
@@ -2869,6 +2857,7 @@ packages:
   /dotenv/16.0.1:
     resolution: {integrity: sha512-1K6hR6wtk2FviQ4kEiSjFiH5rpzEVi8WW0x96aztHVMhEspNpc4DVOUTEHtEva5VThQ8IaBX1Pe4gSzpVVUsKQ==}
     engines: {node: '>=12'}
+    dev: true
 
   /duplexify/3.7.1:
     resolution: {integrity: sha512-07z8uv2wMyS51kKhD1KsdXJg5WQ6t93RneqRxUHnskXVtlYYkLqM0gqStQZ3pj073g687jPCHrqNfCzawLYh5g==}
@@ -3382,13 +3371,13 @@ packages:
       estraverse: 5.3.0
     dev: true
 
-  /eslint-utils/3.0.0_eslint@8.18.0:
+  /eslint-utils/3.0.0_eslint@8.19.0:
     resolution: {integrity: sha512-uuQC43IGctw68pJA1RgbQS8/NP7rch6Cwd4j3ZBtgo4/8Flj4eGE7ZYSZRN3iq5pVUv6GPdW5Z1RFleo84uLDA==}
     engines: {node: ^10.0.0 || ^12.0.0 || >= 14.0.0}
     peerDependencies:
       eslint: '>=5'
     dependencies:
-      eslint: 8.18.0
+      eslint: 8.19.0
       eslint-visitor-keys: 2.1.0
     dev: true
 
@@ -3402,8 +3391,8 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /eslint/8.18.0:
-    resolution: {integrity: sha512-As1EfFMVk7Xc6/CvhssHUjsAQSkpfXvUGMFC3ce8JDe6WvqCgRrLOBQbVpsBFr1X1V+RACOadnzVvcUS5ni2bA==}
+  /eslint/8.19.0:
+    resolution: {integrity: sha512-SXOPj3x9VKvPe81TjjUJCYlV4oJjQw68Uek+AM0X4p+33dj2HY5bpTZOgnQHcG2eAm1mtCU9uNMnJi7exU/kYw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     hasBin: true
     dependencies:
@@ -3416,7 +3405,7 @@ packages:
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
       eslint-scope: 7.1.1
-      eslint-utils: 3.0.0_eslint@8.18.0
+      eslint-utils: 3.0.0_eslint@8.19.0
       eslint-visitor-keys: 3.3.0
       espree: 9.3.2
       esquery: 1.4.0
@@ -3719,10 +3708,6 @@ packages:
   /fast-levenshtein/2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
     dev: true
-
-  /fast-stable-json-stringify/1.0.0:
-    resolution: {integrity: sha512-6Wgfx3fUFhocYEOtuljJVeGxeIMTpEh2j9/Z2ov2LDajKbyHTgTsA+v8WH3V4l+1JVrJYGvHTKb78leX89BzMg==}
-    dev: false
 
   /fastparse/1.1.2:
     resolution: {integrity: sha512-483XLLxTVIwWK3QTrMGRqUfUpoOs/0hbQrl2oz4J0pAcm3A3bu84wxTFqGqkJzewCLdME38xJLJAxBABfQT8sQ==}
@@ -4157,11 +4142,6 @@ packages:
   /hast-util-whitespace/2.0.0:
     resolution: {integrity: sha512-Pkw+xBHuV6xFeJprJe2BBEoDV+AvQySaz3pPDRUs5PNZEMQjpXJJueqrpcHIXxnWTcAGi/UOCgVShlkY6kLoqg==}
     dev: true
-
-  /highlight.js/11.5.1:
-    resolution: {integrity: sha512-LKzHqnxr4CrD2YsNoIf/o5nJ09j4yi/GcH5BnYz9UnVpZdS4ucMgvP61TDty5xJcFGRjnH4DpujkS9bHT3hq0Q==}
-    engines: {node: '>=12.0.0'}
-    dev: false
 
   /history/5.3.0:
     resolution: {integrity: sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ==}
@@ -6266,15 +6246,15 @@ packages:
       strip-indent: 3.0.0
     dev: true
 
-  /redis/4.1.0:
-    resolution: {integrity: sha512-5hvJ8wbzpCCiuN1ges6tx2SAh2XXCY0ayresBmu40/SGusWHFW86TAlIPpbimMX2DFHOX7RN34G2XlPA1Z43zg==}
+  /redis/4.1.1:
+    resolution: {integrity: sha512-vVLYD0RMiDH4YQ1dtmtNU0RX5MAsvEA35Wj+4ZhrSNZXtGK87ktQ0lmI3O3Qn/omoIW456wfOUanqI/RNxagLw==}
     dependencies:
-      '@redis/bloom': 1.0.2_@redis+client@1.1.0
-      '@redis/client': 1.1.0
-      '@redis/graph': 1.0.1_@redis+client@1.1.0
-      '@redis/json': 1.0.3_@redis+client@1.1.0
-      '@redis/search': 1.0.6_@redis+client@1.1.0
-      '@redis/time-series': 1.0.3_@redis+client@1.1.0
+      '@redis/bloom': 1.0.2_@redis+client@1.1.1
+      '@redis/client': 1.1.1
+      '@redis/graph': 1.0.1_@redis+client@1.1.1
+      '@redis/json': 1.0.3_@redis+client@1.1.1
+      '@redis/search': 1.0.6_@redis+client@1.1.1
+      '@redis/time-series': 1.0.3_@redis+client@1.1.1
     dev: false
 
   /regenerate-unicode-properties/10.0.1:
@@ -7170,11 +7150,6 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /type-fest/2.15.1:
-    resolution: {integrity: sha512-LYSjcIz3NmoQksXq/3/B7Nfad+T8mkaI628agAAnHCpXPTBRMK2ygt3eABpzII8CbZZM8dLdVQ4Gr8ousjFjMw==}
-    engines: {node: '>=12.20'}
-    dev: false
-
   /type-is/1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
     engines: {node: '>= 0.6'}
@@ -7445,16 +7420,19 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.16.0:
-    resolution: {integrity: sha512-Ntp6jrM8wf2NMtamMBLkRBBdeqHkgAH/WMh5Xryts1j2ft2D8QZQbiSVFkSl4WmEQzcPP0YM069g/Ga1vtnEtg==}
+  /vitest/0.17.0:
+    resolution: {integrity: sha512-5YO9ubHo0Zg35mea3+zZAr4sCku32C3usvIH5COeJB48TZV/R0J9aGNtGOOqEWZYfOKP0pGZUvTokne3x/QEFg==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
+      '@edge-runtime/vm': '*'
       '@vitest/ui': '*'
       c8: '*'
       happy-dom: '*'
       jsdom: '*'
     peerDependenciesMeta:
+      '@edge-runtime/vm':
+        optional: true
       '@vitest/ui':
         optional: true
       c8:
@@ -7466,7 +7444,7 @@ packages:
     dependencies:
       '@types/chai': 4.3.1
       '@types/chai-subset': 1.3.3
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
       chai: 4.3.6
       debug: 4.3.4
       local-pkg: 0.4.1
