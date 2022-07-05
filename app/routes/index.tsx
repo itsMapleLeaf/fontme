@@ -154,7 +154,7 @@ function LeftSidebar({ children }: { children: React.ReactNode }) {
 
 function EmptyState({ children }: { children: React.ReactNode }) {
   return (
-    <p className="py-8 text-2xl italic font-light text-center opacity-70">
+    <p className="py-8 text-2xl italic font-light text-center font-condensed opacity-70">
       {children}
     </p>
   )
