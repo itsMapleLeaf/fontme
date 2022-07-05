@@ -30,12 +30,28 @@ export const loader: LoaderFunction = () =>
 // don't ever reload this data; it's huge and rarely changes
 export const unstable_shouldReload = () => false
 
-export const meta: MetaFunction = () => ({
-  charset: "utf-8",
-  title: "fontme",
-  description: "Generate optimized fonts and CSS for self-hosting Google Fonts",
-  viewport: "width=device-width,initial-scale=1",
-})
+// const appDomain = "fontme.mapleleaf.dev"
+
+export const meta: MetaFunction = () => {
+  const title = "fontme"
+  const description = "Easily self-host Google Fonts"
+  return {
+    title,
+    description,
+
+    // "og:url": `https://${appDomain}/schedule`,
+    "og:title": title,
+    "og:description": description,
+    // "og:image": `https://${appDomain}/banner.png`,
+
+    // "twitter:card": "summary_large_image",
+    // "twitter:domain": appDomain,
+    // "twitter:url": `https://${appDomain}/schedule`,
+    "twitter:title": title,
+    "twitter:description": description,
+    // "twitter:image": `https://${appDomain}/banner.png`,
+  }
+}
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: tailwind },
