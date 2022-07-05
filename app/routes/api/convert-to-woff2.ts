@@ -29,7 +29,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   // using a child process for better parallelism
   const [output, outputError] = await resultify(
-    execa("bin/convert-to-woff2.mjs", { input: Buffer.from(input) }),
+    execa("bin/convert-to-woff2.mjs", {
+      input: Buffer.from(input),
+      encoding: null,
+    }),
   )
   if (!output) {
     throw new Response(undefined, {
