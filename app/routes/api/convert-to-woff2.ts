@@ -1,7 +1,10 @@
 import { LoaderFunction } from "@remix-run/node"
-import { compress } from "wawoff2"
 import { toError } from "~/modules/common/error"
 import { resultify } from "~/modules/common/result"
+
+// execa is an ES module, and has a bunch of dependencies that are also ES modules
+// this is the easiest way to consume it 🙃
+const execaPromise = import("execa")
 
 export const loader: LoaderFunction = async ({ request }) => {
   const fontUrl = new URL(request.url).searchParams.get("url")
@@ -22,7 +25,12 @@ export const loader: LoaderFunction = async ({ request }) => {
     })
   }
 
-  const [output, outputError] = await resultify(compress(Buffer.from(input)))
+  const { execa } = await execaPromise
+
+  // using a child process for better parallelism
+  const [output, outputError] = await resultify(
+    execa("bin/convert-to-woff2.mjs", { input: Buffer.from(input) }),
+  )
   if (!output) {
     throw new Response(undefined, {
       status: 500,
@@ -30,7 +38,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     })
   }
 
-  return new Response(output, {
+  return new Response(output.stdout, {
     headers: { "Content-Type": "application/font-woff2" },
   })
 }

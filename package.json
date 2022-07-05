@@ -20,6 +20,7 @@
     "clsx": "^1.1.1",
     "daisyui": "^2.17.0",
     "dotenv": "^16.0.1",
+    "execa": "^6.1.0",
     "fast-stable-json-stringify": "^1.0.0",
     "highlight.js": "^11.5.1",
     "isbot": "^3.5.0",
