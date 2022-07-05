@@ -23,6 +23,7 @@
     "fast-stable-json-stringify": "^1.0.0",
     "highlight.js": "^11.5.1",
     "isbot": "^3.5.0",
+    "jszip": "^3.10.0",
     "match-sorter": "^6.3.1",
     "node": ">=16.11 <17",
     "prettier": "^2.7.1",
