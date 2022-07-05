@@ -21,8 +21,11 @@ export function SaveFontsButton({ context }: { context: FontContext }) {
         const normalizedFamily = font.family.replaceAll(" ", "-")
         const fileName = `${normalizedFamily}-${variant.weight}-${variant.style}.woff2`
 
-        const data = fetch(`/api/${fileName}.woff2?url=${variant.url}`).then(
-          (response) => response.blob(),
+        const data = fetch(`/api/convert-to-woff2?url=${variant.url}`).then(
+          (response) =>
+            response.ok
+              ? response.blob()
+              : Promise.reject(new Error(response.statusText)),
         )
 
         return { font, variant, name: fileName, data }
