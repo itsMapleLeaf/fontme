@@ -4,7 +4,8 @@
   "sideEffects": false,
   "scripts": {
     "dev": "run-p --print-label --race dev:*",
-    "dev:remix": "remix dev",
+    "dev:server": "bun run server.ts dev",
+    "dev:remix": "bun remix watch",
     "dev:tailwind": "pnpm run tailwind --watch",
     "dev:docker": "docker-compose up",
     "build": "pnpm run tailwind --minify && remix build",
@@ -17,6 +18,7 @@
     "@heroicons/react": "^1.0.6",
     "@remix-run/node": "0.0.0-experimental-d28d77b8",
     "@remix-run/react": "0.0.0-experimental-d28d77b8",
+    "bun-types": "^0.0.83",
     "clsx": "^1.2.0",
     "daisyui": "^2.18.0",
     "execa": "^6.1.0",
