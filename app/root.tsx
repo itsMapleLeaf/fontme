@@ -64,6 +64,7 @@ function Document({ children }: { children: React.ReactNode }) {
       lang="en"
       className="overflow-y-scroll bg-base-300 text-base-content"
       data-theme="dark"
+      style={{ transform: "translateZ(0)" }}
     >
       <head>
         <Meta />
