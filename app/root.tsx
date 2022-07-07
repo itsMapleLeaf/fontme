@@ -69,6 +69,15 @@ function Document({ children }: { children: React.ReactNode }) {
       <head>
         <Meta />
         <Links />
+
+        {process.env.NODE_ENV === "production" && (
+          <script
+            async
+            defer
+            data-website-id="3d2158ce-05ed-4201-81c2-65fb23cdbafc"
+            src="https://umami-production-72bc.up.railway.app/umami.js"
+          ></script>
+        )}
       </head>
       <body>
         {children}
