@@ -1,5 +1,6 @@
+import { useStore } from "@nanostores/react"
+import { atom } from "nanostores"
 import { useEffect } from "react"
-import { Cell, useCell } from "../state/cell"
 
 declare global {
   interface Window {
@@ -29,7 +30,7 @@ declare global {
 
 // externalize the state, so it's shared across all hooks usage
 // and true on render if another hook already set it
-const fsAccessSupported = new Cell(false)
+const fsAccessSupported = atom(false)
 
 export function useFsAccessSupported() {
   // we want to set this from an effect,
@@ -37,5 +38,5 @@ export function useFsAccessSupported() {
   // and sidesteps hydration issues
   useEffect(() => fsAccessSupported.set("showDirectoryPicker" in window), [])
 
-  return useCell(fsAccessSupported)
+  return useStore(fsAccessSupported)
 }

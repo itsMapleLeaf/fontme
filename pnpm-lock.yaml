@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@headlessui/react': ^1.6.5
   '@heroicons/react': ^1.0.6
+  '@nanostores/react': ^0.2.0
   '@remix-run/dev': 0.0.0-experimental-d28d77b8
   '@remix-run/node': 0.0.0-experimental-d28d77b8
   '@remix-run/react': 0.0.0-experimental-d28d77b8
@@ -20,6 +21,7 @@ specifiers:
   isbot: ^3.5.0
   jszip: ^3.10.0
   match-sorter: ^6.3.1
+  nanostores: ^0.5.12
   node: '>=16.11 <17'
   npm-run-all: ^4.1.5
   prettier: ^2.7.1
@@ -37,6 +39,7 @@ specifiers:
 dependencies:
   '@headlessui/react': 1.6.5_biqbaboplfbrettd7655fr4n2y
   '@heroicons/react': 1.0.6_react@18.2.0
+  '@nanostores/react': 0.2.0_3iuy2wepgz3w53kxsavf2p7rzm
   '@remix-run/node': 0.0.0-experimental-d28d77b8_biqbaboplfbrettd7655fr4n2y
   '@remix-run/react': 0.0.0-experimental-d28d77b8_biqbaboplfbrettd7655fr4n2y
   clsx: 1.2.0
@@ -45,6 +48,7 @@ dependencies:
   isbot: 3.5.0
   jszip: 3.10.0
   match-sorter: 6.3.1
+  nanostores: 0.5.12
   node: 16.15.1
   prettier: 2.7.1
   react: 18.2.0
@@ -1406,6 +1410,19 @@ packages:
       '@jridgewell/resolve-uri': 3.0.8
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
+
+  /@nanostores/react/0.2.0_3iuy2wepgz3w53kxsavf2p7rzm:
+    resolution: {integrity: sha512-8kR6Ke8KAacAuBvodGrMNtLof8xF44WkfqtWWMZffP0TZsXEePdIWEQ6MDmCvVzbFAwOKvF71YjVAJ660NYCAw==}
+    engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
+    peerDependencies:
+      nanostores: ^0.5.2
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+    dependencies:
+      nanostores: 0.5.12
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
 
   /@nodelib/fs.scandir/2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -5502,6 +5519,11 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /nanostores/0.5.12:
+    resolution: {integrity: sha512-5BccS7nNInTc7Noz2gv19gyx5h5y6m72nj6ZnCTV98GdFdwvcFJf2MMl+7VsX76E1toV1YrLqlDn+R+OF73PVg==}
+    engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
+    dev: false
 
   /natural-compare/1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}

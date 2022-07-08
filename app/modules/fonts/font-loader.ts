@@ -1,5 +1,6 @@
+import { useStore } from "@nanostores/react"
+import { atom } from "nanostores"
 import { useEffect } from "react"
-import { Cell, useCell } from "../state/cell"
 
 const loaders = new Map<string, FontLoader>()
 
@@ -20,11 +21,11 @@ export function useFontLoader(
 
   useEffect(() => loader.load(), [loader])
 
-  return useCell(loader.status)
+  return useStore(loader.status)
 }
 
 class FontLoader {
-  status = new Cell<"idle" | "loading" | "loaded" | "error">("idle")
+  status = atom<"idle" | "loading" | "loaded" | "error">("idle")
 
   constructor(
     readonly family: string,
@@ -33,7 +34,7 @@ class FontLoader {
   ) {}
 
   load() {
-    if (this.status.current !== "idle") return
+    if (this.status.get() !== "idle") return
     this.status.set("loading")
 
     const { weight, style } = this.variant
