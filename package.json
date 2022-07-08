@@ -15,6 +15,7 @@
   "dependencies": {
     "@headlessui/react": "^1.6.5",
     "@heroicons/react": "^1.0.6",
+    "@nanostores/react": "^0.2.0",
     "@remix-run/node": "0.0.0-experimental-d28d77b8",
     "@remix-run/react": "0.0.0-experimental-d28d77b8",
     "clsx": "^1.2.0",
@@ -23,6 +24,7 @@
     "isbot": "^3.5.0",
     "jszip": "^3.10.0",
     "match-sorter": "^6.3.1",
+    "nanostores": "^0.5.12",
     "node": ">=16.11 <17",
     "prettier": "^2.7.1",
     "react": "^18.2.0",
