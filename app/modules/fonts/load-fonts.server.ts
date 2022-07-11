@@ -94,7 +94,9 @@ async function loadFontsFromApi(url: string): Promise<FontDict> {
 async function loadFontsFromCache(key: string): Promise<FontDict | undefined> {
   try {
     const result = await cacheGet(key)
-    return fontDictSchema.parse(result && JSON.parse(result))
+    if (!result) return
+
+    return fontDictSchema.parse(JSON.parse(result))
   } catch (error) {
     console.warn("Error loading fonts from cache:", error)
     return undefined
