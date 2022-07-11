@@ -36,6 +36,9 @@ export const meta: MetaFunction = () => {
   const title = "fontme"
   const description = "Easily self-host Google Fonts"
   return {
+    "charSet": "utf-8",
+    "viewport": "width=device-width, initial-scale=1",
+
     title,
     description,
 

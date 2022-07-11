@@ -9,6 +9,7 @@ export type ButtonProps = {
   shape?: "default" | "square" | "circle"
   label: ReactNode
   icon?: ReactNode
+  outline?: boolean
   loading?: boolean
   disabled?: boolean
   onClick?: (event: React.MouseEvent) => void
@@ -30,6 +31,7 @@ export function Button({
   shape = "default",
   label,
   icon,
+  outline = false,
   loading,
   disabled,
   onClick,
@@ -64,6 +66,7 @@ export function Button({
           sizeClass,
           shapeClass,
           loading && clsx`loading`,
+          outline && clsx`btn-outline`,
         ),
         disabled,
         children: (
