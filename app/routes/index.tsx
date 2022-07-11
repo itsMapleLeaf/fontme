@@ -1,3 +1,5 @@
+import { Dialog, Transition } from "@headlessui/react"
+import { QuestionMarkCircleIcon } from "@heroicons/react/solid"
 import { Deferrable, deferred, LoaderFunction } from "@remix-run/node"
 import {
   Deferred,
@@ -6,6 +8,7 @@ import {
   useSearchParams,
 } from "@remix-run/react"
 import { matchSorter } from "match-sorter"
+import { Fragment, useState } from "react"
 import { Virtuoso } from "react-virtuoso"
 import { useWindowSize } from "~/modules/dom/use-window-size"
 import { ClearSelectedFontsButton } from "~/modules/fonts/clear-selected-fonts-button"
@@ -16,17 +19,25 @@ import { pangrams } from "~/modules/fonts/pangrams"
 import { SaveFontsButton } from "~/modules/fonts/save-fonts-button"
 import { SelectedFont } from "~/modules/fonts/selected-font"
 import { makeSearchContext } from "~/modules/search/search-context"
+import { Button } from "~/modules/ui/button"
 import { MaxWidthContainer } from "~/modules/ui/max-width-container"
 import { RaisedPanel } from "~/modules/ui/raised-panel"
 import { SearchForm } from "~/modules/ui/search-form"
+import { getVisited, setVisited } from "~/modules/visited.server"
 
 type LoaderData = {
   fonts: Deferrable<FontDict>
   pangrams: string[]
+  firstVisit: boolean
 }
 
-export const loader: LoaderFunction = () =>
-  deferred<LoaderData>({ fonts: loadFonts(), pangrams })
+export const loader: LoaderFunction = async ({ request }) => {
+  const firstVisit = (await getVisited(request)) !== true
+
+  return setVisited(
+    deferred<LoaderData>({ fonts: loadFonts(), pangrams, firstVisit }),
+  )
+}
 
 // don't ever reload this data; it's huge and rarely changes
 export const unstable_shouldReload = () => false
@@ -39,7 +50,7 @@ export default function Index() {
   const { height } = useWindowSize()
 
   return (
-    <>
+    <div className="isolate">
       <LeftSidebar>
         <RaisedPanel rounded={false} fullHeight>
           <section
@@ -66,14 +77,17 @@ export default function Index() {
                     <ClearSelectedFontsButton context={context} />
                   </>
                 ) : (
-                  <div className="grid flex-1 place-items-center">
-                    <EmptyState>
-                      Choose some fonts, and they'll appear here.
-                    </EmptyState>
-                  </div>
+                  <>
+                    <div className="my-auto">
+                      <EmptyState>
+                        Choose some fonts, and they'll appear here.
+                      </EmptyState>
+                    </div>
+                  </>
                 )
               }}
             </Deferred>
+            <HelpModalButton />
           </section>
         </RaisedPanel>
       </LeftSidebar>
@@ -135,7 +149,7 @@ export default function Index() {
           </MaxWidthContainer>
         </main>
       </div>
-    </>
+    </div>
   )
 }
 
@@ -157,5 +171,78 @@ function EmptyState({ children }: { children: React.ReactNode }) {
     <p className="py-8 text-2xl italic font-light text-center font-condensed opacity-70">
       {children}
     </p>
+  )
+}
+
+function HelpModalButton() {
+  const { firstVisit } = useLoaderData<LoaderData>()
+  const [visible, setVisible] = useState(firstVisit)
+
+  return (
+    <>
+      <Button
+        variant="ghost"
+        label="Help"
+        icon={<QuestionMarkCircleIcon className="w-6" />}
+        onClick={() => setVisible(true)}
+      />
+
+      <Transition show={visible} as={Fragment} appear>
+        <Dialog onClose={setVisible}>
+          <Transition.Child
+            as={Fragment}
+            enter="transition duration-100 ease-out"
+            enterFrom="transform opacity-0"
+            enterTo="transform opacity-100"
+            leave="transition duration-75 ease-out"
+            leaveFrom="transform opacity-100"
+            leaveTo="transform opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 flex">
+            <Transition.Child
+              as={Fragment}
+              enter="transition duration-100 ease-out"
+              enterFrom="transform scale-95 opacity-0"
+              enterTo="transform scale-100 opacity-100"
+              leave="transition duration-75 ease-out"
+              leaveFrom="transform scale-100 opacity-100"
+              leaveTo="transform scale-95 opacity-0"
+            >
+              <Dialog.Panel className="m-auto">
+                <RaisedPanel>
+                  <div className="grid max-w-screen-sm gap-4 p-4">
+                    <Dialog.Title className="text-3xl font-light text-center font-condensed">
+                      hi there!
+                    </Dialog.Title>
+                    <Dialog.Description as="div" className="grid gap-4">
+                      <p>
+                        fontme generates .woff2 files and the necessary CSS to
+                        host the fonts on your website. This can be faster than
+                        using Google's CDN, and you avoid sending data to their
+                        servers!
+                      </p>
+                      <p>
+                        Search for the fonts and variants you want to use, then
+                        click "Save fonts" and choose the folder you want to
+                        download them to.
+                      </p>
+                    </Dialog.Description>
+                    <div className="text-center">
+                      <Button
+                        label="Thanks!"
+                        onClick={() => setVisible(false)}
+                      />
+                    </div>
+                  </div>
+                </RaisedPanel>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition>
+    </>
   )
 }
