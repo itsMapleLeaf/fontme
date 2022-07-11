@@ -1,7 +1,7 @@
 import { LoaderFunction } from "@remix-run/node"
 import JSZip from "jszip"
-import { loadFonts } from "~/modules/fonts/api.server"
 import { getFontFiles, makeFontContext } from "~/modules/fonts/font-context"
+import { loadFonts } from "~/modules/fonts/load-fonts.server"
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url)

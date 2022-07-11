@@ -1,6 +1,6 @@
 import { expect, test } from "vitest"
-import { FontDict } from "./api.server"
 import { makeFontContext } from "./font-context"
+import { FontDict } from "./load-fonts.server"
 
 const fontDict: FontDict = {
   familyNames: ["Roboto", "Roboto Mono"],

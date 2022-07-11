@@ -15,7 +15,7 @@ import {
   useCatch,
 } from "@remix-run/react"
 import type { CatchBoundaryComponent } from "@remix-run/react/routeModules"
-import { FontDict, loadFonts } from "~/modules/fonts/api.server"
+import { FontDict, loadFonts } from "~/modules/fonts/load-fonts.server"
 import { pangrams } from "./modules/fonts/pangrams"
 import tailwind from "./tailwind.css"
 

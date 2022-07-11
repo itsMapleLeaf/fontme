@@ -2,7 +2,7 @@ import { raise } from "../common/error"
 import { omit } from "../common/omit"
 import { compactParams } from "../dom/compact-params"
 import { css } from "../dom/css"
-import { FontDict } from "./api.server"
+import { FontDict } from "./load-fonts.server"
 
 // query param format: ?fonts=Roboto:400,400italic;Roboto+Mono:400,400italic
 type ParsedFontsParam = {
